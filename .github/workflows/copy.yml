@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Copy Images
 
 on:
   push:
@@ -21,4 +21,4 @@ jobs:
           --dest-creds ${{ github.actor }}:${{ github.token }}
           --dest-compress --dest-compress-format zstd
           docker://adguard/adguardhome:latest 
-          docker://ghcr.io/abihf/images/adguardhome:latest 
+          docker://ghcr.io/abihf/images:adguardhome-latest
