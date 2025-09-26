@@ -42,7 +42,6 @@ jobs:
         
         with:
           context: ./qbittorrent
-          file: ./Dockerfile
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
