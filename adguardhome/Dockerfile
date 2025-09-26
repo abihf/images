@@ -37,13 +37,7 @@ RUN --mount=type=bind,from=node-builder,source=/app/AdGuardHome/build,target=/ap
 
 # image for running
 FROM alpine:latest
-RUN apk add --no-cache ca-certificates && \
-  adduser \
-    -D \
-    -H \
-    -s /sbin/nologin \
-    -u 1000 \
-    agUser
+RUN apk add --no-cache ca-certificates
 
 VOLUME /opt/adguardhome/conf
 VOLUME /opt/adguardhome/work
@@ -60,7 +54,6 @@ EXPOSE 53/tcp 53/udp \
 WORKDIR /opt/adguardhome/work
 COPY --link --from=go-builder /app/AdGuardHome/AdGuardHome /opt/adguardhome/AdGuardHome
 COPY --link --from=go-builder /app/AdGuardHome/LICENSE.txt /opt/adguardhome/
-USER agUser
 
 CMD [ "/opt/adguardhome/AdGuardHome", \
 	"--no-check-update", \
