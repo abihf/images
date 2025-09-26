@@ -116,4 +116,4 @@ COPY --link --from=builder /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 VOLUME /config
 
 USER qbtUser
-CMD [ "/usr/bin/tini", "--", "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]
+CMD [ "tini", "--", "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]
