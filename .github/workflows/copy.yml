@@ -21,4 +21,4 @@ jobs:
           --dest-creds ${{ github.actor }}:${{ github.token }}
           --dest-compress --dest-compress-format zstd
           docker://adguard/adguardhome:latest 
-          docker://ghcr.io/abihf/images:adguardhome-latest
+          docker://ghcr.io/abihf/images/adguardhome:latest
