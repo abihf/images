@@ -3,8 +3,6 @@
 name: Copy Images
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
