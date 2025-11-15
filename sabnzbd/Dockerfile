@@ -23,7 +23,7 @@ EOF
 
 
 
-FROM python:3.13-alpine
+FROM python:3.14-alpine
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip
 ADD --link https://github.com/sabnzbd/sabnzbd.git /app/sabnzbd
 WORKDIR /app/sabnzbd
