@@ -40,7 +40,7 @@ RUN \
     qt6-qttools-dev \
     zlib-dev
 
-ARG QBT_VERSION=devel \
+ARG QBT_VERSION=v5_1_x \
     BOOST_VERSION_MAJOR="1" \
     BOOST_VERSION_MINOR="89" \
     BOOST_VERSION_PATCH="0" \
@@ -85,7 +85,7 @@ RUN \
   cmake --install build
 
 # build qbittorrent
-ADD --link https://github.com/qbittorrent/qBittorrent.git qBittorrent
+ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_VERSION} qBittorrent
 RUN \
   cd qBittorrent && \
   cmake \
