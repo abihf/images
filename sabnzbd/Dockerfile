@@ -30,7 +30,7 @@ WORKDIR /app/sabnzbd
 RUN pip3 install --upgrade -r requirements.txt
 
 COPY --link --from=par2 /out/par2 /
-ADD --link --chmod=755 https://github.com/EDM115/unrar-alpine/releases/download/7.1.10/unrar /usr/bin/unrar
+ADD --link --chmod=755 https://github.com/EDM115/unrar-alpine/releases/download/7.2.2/unrar /usr/bin/unrar
 
 VOLUME [ "/config" ]
 CMD [ "tini", "--", "python3", "SABnzbd.py", "--config-file", "/config/sabnzbd.ini", "--server", "0.0.0.0:8080"]
