@@ -1,4 +1,4 @@
-FROM alpine:latest AS par2
+FROM dhi.io/alpine-base:3.22-dev AS par2
 RUN apk add --no-cache make clang20 llvm20-dev lld automake autoconf
 
 WORKDIR /app
@@ -24,7 +24,7 @@ EOF
 
 
 
-FROM python:3.14-alpine
+FROM dhi.io/python:3.14-alpine3.22-dev
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip
 ADD --link https://github.com/sabnzbd/sabnzbd.git /app/sabnzbd
 WORKDIR /app/sabnzbd

@@ -1,5 +1,5 @@
 # create an up-to-date base image for everything
-FROM --platform=$BUILDPLATFORM alpine:latest AS base
+FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.22-dev AS base
 
 RUN \
   apk --no-cache --update-cache upgrade
@@ -103,17 +103,8 @@ RUN \
 # image for running
 FROM base
 
-RUN \
-  adduser \
-    -D \
-    -H \
-    -s /sbin/nologin \
-    -u 1000 \
-    qbtUser
-
 COPY --link --from=builder /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 
 VOLUME /config
 
-USER qbtUser
 CMD [ "tini", "--", "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]
