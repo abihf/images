@@ -25,10 +25,10 @@ EOF
 
 
 FROM dhi.io/python:3.14-alpine3.22-dev
-RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip
+RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip libbz2
 ADD --link https://github.com/sabnzbd/sabnzbd.git /app/sabnzbd
 WORKDIR /app/sabnzbd
-RUN pip3 install --upgrade -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt
 
 COPY --link --from=par2 /out/par2 /
 ADD --link --chmod=755 https://github.com/EDM115/unrar-alpine/releases/download/7.2.2/unrar /usr/bin/unrar
