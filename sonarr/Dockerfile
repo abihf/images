@@ -4,7 +4,7 @@ WORKDIR /app
 FROM base AS downloader
 ARG SONARR_VERSION=4.0.16.2946
 ADD --link https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.develop.${SONARR_VERSION}.linux-musl-x64.tar.gz sonarr.tar.gz
-RUN tar -xf sonarr.tar.gz
+RUN tar -xf sonarr.tar.gz && rm -rf Sonarr/Sonarr.Update
 
 # image for running
 FROM base
