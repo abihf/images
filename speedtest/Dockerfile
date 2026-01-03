@@ -3,9 +3,9 @@ WORKDIR /app
 
 FROM base AS builder
 ADD --link https://github.com/librespeed/speedtest-rust.git /app
-ENV RUSTFLAGS=""
-ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static"
-ENV CARGO_HOME=/usr/local/cargo
+ENV RUSTFLAGS="" \
+  CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static" \
+  CARGO_HOME=/usr/local/cargo
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/app/target \
