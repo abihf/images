@@ -2,8 +2,6 @@ FROM dhi.io/rust:1-alpine3.22-dev AS base
 WORKDIR /app
 
 FROM base AS builder
-RUN apk add --no-cache sqlite-dev sqlite-static
-# RUN echo $CARGO_HOME && false
 ADD --link https://github.com/librespeed/speedtest-rust.git /app
 ENV RUSTFLAGS=""
 ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static"
