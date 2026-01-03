@@ -58,10 +58,7 @@ jobs:
           platforms: linux/amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: >
-            type=image,
-            oci-mediatypes=true,
-            compression=zstd,
+          outputs:  type=image,oci-mediatypes=true,compression=zstd
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
