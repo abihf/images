@@ -1,7 +1,7 @@
 FROM scratch AS downloader
 
-ARG PLEX_VERSION=1.43.0.10389-8be686aa6
-ADD --link https://downloads.plex.tv/plex-media-server-new/${PLEX_VERSION}/debian/plexmediaserver_${PLEX_VERSION}_amd64.deb plex.deb
+ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.0.10389-8be686aa6/debian/plexmediaserver_1.43.0.10389-8be686aa6_amd64.deb
+ADD --link ${PLEX_URL} plex.deb
 
 FROM dhi.io/debian-base:trixie
 RUN --mount=type=bind,from=downloader,source=/plex.deb,target=/plex.deb \

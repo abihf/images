@@ -1,10 +1,8 @@
-# create an up-to-date base image for everything
 FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.22-dev AS base
 
-RUN \
-  apk --no-cache --update-cache upgrade
+RUN apk --no-cache --update-cache upgrade
 
-# run-time dependencies
+# runtime dependencies
 RUN \
   apk --no-cache add \
     7zip \
@@ -18,6 +16,7 @@ RUN \
     tini \
     tzdata \
     zlib
+
 
 # image for building
 FROM base AS builder
@@ -40,13 +39,6 @@ RUN \
     qt6-qttools-dev \
     zlib-dev
 
-ARG QBT_VERSION=v5_1_x \
-    BOOST_VERSION_MAJOR="1" \
-    BOOST_VERSION_MINOR="89" \
-    BOOST_VERSION_PATCH="0" \
-    LIBBT_VERSION="RC_2_0" \
-    LIBBT_CMAKE_FLAGS=""
-
 ENV CC=clang-20 \
     CXX=clang++-20 \
     AR=llvm20-ar \
@@ -54,20 +46,19 @@ ENV CC=clang-20 \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld"
 
-ADD --link https://archives.boost.io/release/${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}.${BOOST_VERSION_PATCH}/source/boost_${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}.tar.gz boost.tar.gz
-
 # prepare boost
+ARG BOOST_TAG=boost-1.90.0
+ADD --link https://github.com/boostorg/boost/releases/download/${BOOST_TAG}/${BOOST_TAG}-b2-nodocs.tar.xz boost.tar.xz
 RUN \
-  tar -xf boost.tar.gz && \
-  mv boost_* boost && \
+  tar -xf boost.tar.xz && \
+  mv boost-* boost && \
   cd boost && \
   ./bootstrap.sh && \
   ./b2 stage --stagedir=./ --with-headers
 
 # build libtorrent
-
-ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_VERSION} libtorrent
-
+ARG LIBBT_COMMIT=9b829be40b8d6c409ffde428ac3f41a48e81592f
+ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_COMMIT} libtorrent
 RUN \
   cd libtorrent && \
   cmake \
@@ -79,13 +70,13 @@ RUN \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
     -DBOOST_ROOT=/boost/lib/cmake \
-    -Ddeprecated-functions=OFF \
-    $LIBBT_CMAKE_FLAGS && \
+    -Ddeprecated-functions=OFF && \
   cmake --build build -j $(nproc) && \
   cmake --install build
 
 # build qbittorrent
-ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_VERSION} qBittorrent
+ARG QBT_COMMIT=33e5e772200b5e2f9d23af8870ce7436ec216faa
+ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN \
   cd qBittorrent && \
   cmake \
@@ -102,9 +93,6 @@ RUN \
 
 # image for running
 FROM base
-
 COPY --link --from=builder /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
-
 VOLUME /config
-
 CMD [ "tini", "--", "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]

@@ -2,7 +2,8 @@ FROM dhi.io/rust:1-alpine3.22-dev AS base
 WORKDIR /app
 
 FROM base AS builder
-ADD --link https://github.com/librespeed/speedtest-rust.git /app
+ARG SPEEDTEST_COMMIT=6f8a0007157d34686d9f33988d08438fd927da2a
+ADD --link https://github.com/librespeed/speedtest-rust.git#${SPEEDTEST_COMMIT} /app
 ENV RUSTFLAGS="" \
   CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-C target-feature=+crt-static" \
   CARGO_HOME=/usr/local/cargo
