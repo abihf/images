@@ -17,7 +17,8 @@ WORKDIR /app
 COPY --link --from=ui /app/build build
 ENV CHANNEL=edge
 RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build sh -euo pipefail <<EOF
+    --mount=type=cache,target=/root/.cache/go-build \
+    sh -euo pipefail <<EOF
 git fetch --tags
 version_pkg='github.com/AdguardTeam/AdGuardHome/internal/version'
 version="\$(sh ./scripts/make/version.sh)"
@@ -35,5 +36,6 @@ FROM scratch
 COPY --link --from=dhi.io/golang:1-alpine3.23-dev /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --link --from=builder /app/AdGuardHome /usr/bin/AdGuardHome
 VOLUME [ "/opt/adguardhome/conf/", "/opt/adguardhome/work/" ]
-ENTRYPOINT [ "/usr/bin/AdGuardHome", "--no-check-update", "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work" ]
+ENTRYPOINT [ "/usr/bin/AdGuardHome" ]
+CMD [ "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work/" ]
 
