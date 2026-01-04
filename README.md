@@ -10,6 +10,7 @@ A collection of hardened Docker images for various applications, automatically b
 | [Sonarr](sonarr/) | TV show automation | ![Sonarr](https://github.com/abihf/images/actions/workflows/sonarr.yml/badge.svg) |
 | [SABnzbd](sabnzbd/) | Usenet binary newsreader | ![SABnzbd](https://github.com/abihf/images/actions/workflows/sabnzbd.yml/badge.svg) |
 | [qBittorrent](qbittorrent/) | BitTorrent client | ![qBittorrent](https://github.com/abihf/images/actions/workflows/qbittorrent.yml/badge.svg) |
+| [AdGuardHome](adguardhome/) | DNS sinkhole & ad blocker | ![AdGuardHome](https://github.com/abihf/images/actions/workflows/adguardhome.yml/badge.svg) |
 | [Overseerr](overseerr/) | Request management and media discovery tool | ![Overseerr](https://github.com/abihf/images/actions/workflows/overseerr.yml/badge.svg) |
 | [Restic](restic/) | Fast, secure backup program | ![Restic](https://github.com/abihf/images/actions/workflows/restic.yml/badge.svg) |
 | [Speedtest](speedtest/) | Network speed testing (librespeed-rs) | ![Speedtest](https://github.com/abihf/images/actions/workflows/speedtest.yml/badge.svg) |
