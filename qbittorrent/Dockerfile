@@ -44,7 +44,8 @@ ENV CC=clang-20 \
     AR=llvm20-ar \
     CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld"
+    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld" \
+    SOURCE_DATE_EPOCH=0
 
 # prepare boost
 ARG BOOST_TAG=boost-1.90.0
@@ -59,7 +60,7 @@ RUN \
 # build libtorrent
 ARG LIBBT_COMMIT=15f596ece8afe3bc09e1c95eb527166bf8417526
 ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_COMMIT} libtorrent
-RUN \
+RUN --mount=type=cache,target=/app/libtorrent/build \
   cd libtorrent && \
   cmake \
     -B build \
@@ -77,7 +78,7 @@ RUN \
 # build qbittorrent
 ARG QBT_COMMIT=33e5e772200b5e2f9d23af8870ce7436ec216faa
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
-RUN \
+RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \
   cmake \
     -B build \
