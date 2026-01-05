@@ -37,5 +37,5 @@ COPY --link --from=dhi.io/golang:1-alpine3.23-dev /etc/ssl/certs/ca-certificates
 COPY --link --from=builder /app/AdGuardHome /usr/bin/AdGuardHome
 VOLUME [ "/opt/adguardhome/conf/", "/opt/adguardhome/work/" ]
 ENTRYPOINT [ "/usr/bin/AdGuardHome" ]
-CMD [ "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work/" ]
+CMD [ "--no-check-update", "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work/" ]
 
