@@ -43,7 +43,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: dhi.io
-          username: ${{ secrets.DOCKER_USER }}
+          username: ${{ env.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push image (latest, sha)
