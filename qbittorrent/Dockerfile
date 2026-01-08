@@ -1,10 +1,8 @@
-FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.22-dev AS base
-
-RUN apk --no-cache --update-cache upgrade
+FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.23-dev AS base
 
 # runtime dependencies
-RUN \
-  apk --no-cache add \
+RUN --mount=type=cache,target=/var/cache/apk \
+  apk add \
     7zip \
     bash \
     curl \
@@ -24,12 +22,13 @@ FROM base AS builder
 # alpine linux packages:
 # https://git.alpinelinux.org/aports/tree/community/libtorrent-rasterbar/APKBUILD
 # https://git.alpinelinux.org/aports/tree/community/qbittorrent/APKBUILD
-RUN \
+RUN --mount=type=cache,target=/var/cache/apk \
   apk add \
     cmake \
+    extra-cmake-modules \
     git \
-    clang20 \
-    llvm20-dev \
+    clang \
+    llvm-dev \
     lld \
     make \
     ninja \
@@ -39,14 +38,14 @@ RUN \
     qt6-qttools-dev \
     zlib-dev
 
-ENV CC=clang-20 \
-    CXX=clang++-20 \
-    AR=llvm20-ar \
+ENV CC=clang \
+    CXX=clang++ \
+    AR=llvm-ar \
     CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld" \
     SOURCE_DATE_EPOCH=0
-
+ 
 # prepare boost
 ARG BOOST_TAG=boost-1.90.0
 ADD --link https://github.com/boostorg/boost/releases/download/${BOOST_TAG}/${BOOST_TAG}-b2-nodocs.tar.xz boost.tar.xz
@@ -54,7 +53,9 @@ RUN \
   tar -xf boost.tar.xz && \
   mv boost-* boost && \
   cd boost && \
-  ./bootstrap.sh && \
+  mkdir -p /tmp && \
+  export TMPDIR=/tmp && \
+  ./bootstrap.sh --with-toolset=clang && \
   ./b2 stage --stagedir=./ --with-headers
 
 # build libtorrent
@@ -76,7 +77,7 @@ RUN --mount=type=cache,target=/app/libtorrent/build \
   cmake --install build
 
 # build qbittorrent
-ARG QBT_COMMIT=33e5e772200b5e2f9d23af8870ce7436ec216faa
+ARG QBT_COMMIT=dda7f801646f69062ea5c7e5b2b25cfa68f4e87e
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \
@@ -96,4 +97,5 @@ RUN --mount=type=cache,target=/app/qBittorrent/build \
 FROM base
 COPY --link --from=builder /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 VOLUME /config
-CMD [ "tini", "--", "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]
+ENTRYPOINT [ "tini", "--" ]
+CMD [ "qbittorrent-nox", "--webui-port=8080", "--profile=/config" ]

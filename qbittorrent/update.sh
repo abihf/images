@@ -15,7 +15,7 @@ update_docker_arg "LIBBT_COMMIT" "$LIBBT_COMMIT"
 echo "Latest libtorrent commit on $LIBBT_REPO ($LIBBT_BRANCH): $LIBBT_COMMIT"
 
 QBT_REPO="qbittorrent/qBittorrent"
-QBT_BRANCH="v5_1_x"
+QBT_BRANCH="master"
 QBT_COMMIT=$(get_latest_github_commit "$QBT_REPO" "$QBT_BRANCH")
 update_docker_arg "QBT_COMMIT" "$QBT_COMMIT"
 echo "Latest qBittorrent commit on $QBT_REPO ($QBT_BRANCH): $QBT_COMMIT"
