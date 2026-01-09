@@ -1,2 +1,2 @@
-FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.22-dev
+FROM dhi.io/alpine-base:3.23-dev
 RUN apk add --no-cache restic ripgrep
