@@ -20,8 +20,7 @@ FROM base
 ENV SOURCE_DATE_EPOCH=0
 RUN apk add --no-cache libintl sqlite-libs icu-libs tini
 COPY --link --from=downloader /app/ /app/
-ENV COMPlus_EnableDiagnostics=0 \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+ENV COMPlus_EnableDiagnostics=0
 
 VOLUME ["/config"]
 EXPOSE 7878

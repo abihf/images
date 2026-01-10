@@ -34,8 +34,7 @@ RUN apk add --no-cache libintl sqlite-libs icu-libs tini
 COPY --link --from=be /app/_output/net10.0/linux-musl-x64/publish /app/bin
 COPY --link --from=fe /app/_output/UI/ /app/bin/UI/
 EXPOSE 8989
-ENV COMPlus_EnableDiagnostics=0 \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+ENV COMPlus_EnableDiagnostics=0
 
 ARG SONARR_REVISION
 ARG SONARR_BRANCH
