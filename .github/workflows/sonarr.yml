@@ -55,7 +55,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.sha }}
           build-args: |
-            SONARR_COMMIT_COUNT=${{ github.run_number }}
+            SONARR_REVISION=${{ github.run_number }}
           platforms: linux/amd64
           cache-from: type=gha,scope=${{ github.workflow }}
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}
