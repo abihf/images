@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - 'raddarr/**'
-      - .github/workflows/raddarr.yml
+      - 'radarr/**'
+      - .github/workflows/radarr.yml
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE: ${{ github.repository }}/raddarr
+  IMAGE: ${{ github.repository }}/radarr
 
 permissions:
   contents: read
@@ -49,7 +49,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: ./raddarr
+          context: ./radarr
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
