@@ -8,7 +8,7 @@ ARG PROWLARR_VERSION
 ADD --link https://github.com/Prowlarr/Prowlarr/releases/download/v${PROWLARR_VERSION}/Prowlarr.develop.${PROWLARR_VERSION}.linux-musl-core-x64.tar.gz prowlarr.tar.gz
 RUN tar -xzf prowlarr.tar.gz && \
   mv Prowlarr bin && \
-  rm -rf "bin/Prowlarr.Update"
+  rm -rf "bin/Prowlarr.Update" && rm prowlarr.tar.gz
 COPY <<EOF "package_info"
 PackageVersion=${PROWLARR_VERSION}
 PackageAuthor=[abihf](https://github.com/abihf/images)

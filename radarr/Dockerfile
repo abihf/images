@@ -7,7 +7,7 @@ ARG RADARR_VERSION=6.1.1.10317
 ADD --link https://github.com/Radarr/Radarr/releases/download/v${RADARR_VERSION}/Radarr.develop.${RADARR_VERSION}.linux-musl-core-x64.tar.gz radarr.tar.gz
 RUN tar -xzf radarr.tar.gz && \
   mv Radarr bin && \
-  rm -rf "bin/Radarr.Update"
+  rm -rf "bin/Radarr.Update" && rm radarr.tar.gz
 COPY <<EOF "package_info"
 PackageVersion=${RADARR_VERSION}
 PackageAuthor=[abihf](https://github.com/abihf/images)
