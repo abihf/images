@@ -1,51 +1,26 @@
-ARG SONARR_COMMIT=bee7e4325f8d3c79572f2a088e661d2133f15158
-ARG SONARR_REVISION=0
-ARG SONARR_BRANCH=v5-develop
-
-FROM dhi.io/alpine-base:3.22-dev AS base
+FROM dhi.io/alpine-base:3.23-dev AS base
 WORKDIR /app
 
-FROM dhi.io/dotnet:10-sdk-alpine3.22 AS be
-ENV SOURCE_DATE_EPOCH=0
-RUN apk add --no-cache git
-ARG SONARR_COMMIT
-ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-WORKDIR /app
-ARG SONARR_REVISION
-ARG SONARR_BRANCH
-RUN sed -i -e "s/<AssemblyVersion>[0-9.*]\+<\/AssemblyVersion>/<AssemblyVersion>5.0.0.${SONARR_REVISION}<\/AssemblyVersion>/;s/<AssemblyConfiguration>[\$()A-Za-z-]\+<\/AssemblyConfiguration>/<AssemblyConfiguration>${SONARR_BRANCH}<\/AssemblyConfiguration>/;" src/Directory.Build.props
-RUN --mount=type=cache,target=/root/.nuget/packages \
-  --mount=type=cache,target=/app/obj \
-  --mount=type=cache,target=/app/_output \
-  dotnet msbuild -restore src/Sonarr.sln -p:SelfContained=true -p:Configuration=Release -p:Platform=Posix -p:RuntimeIdentifiers=linux-musl-x64 -t:PublishAllRids -p:IlcInstructionSet=x86-64-v3 && \
-  mv /app/_output/net10.0/linux-musl-x64/publish bin && \
-  chmod 0755 /app/bin/ffprobe
-
-FROM dhi.io/node:24-alpine3.22-dev AS fe
-ENV SOURCE_DATE_EPOCH=0
-ARG SONARR_COMMIT
-ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-WORKDIR /app
-RUN yarn install
-RUN yarn build --env production
+FROM base AS downloader
+ARG SONARR_VERSION=4.0.16.2946
+ADD --link https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.develop.${SONARR_VERSION}.linux-musl-x64.tar.gz sonarr.tar.gz
+RUN tar -xzf sonarr.tar.gz && \
+  mv Sonarr bin && \
+  rm -rf "bin/Sonarr.Update" && rm sonarr.tar.gz
+COPY <<EOF "package_info"
+PackageVersion=${SONARR_VERSION}
+PackageAuthor=[abihf](https://github.com/abihf/images)
+UpdateMethod=Docker
+Branch=develop
+EOF
 
 # image for running
 FROM base
 ENV SOURCE_DATE_EPOCH=0
 RUN apk add --no-cache libintl sqlite-libs icu-libs tini
-COPY --link --from=be /app/bin /app/bin
-COPY --link --from=fe /app/_output/UI/ /app/bin/UI/
-EXPOSE 8989
+COPY --link --from=downloader /app/ /app/
 ENV COMPlus_EnableDiagnostics=0
-
-ARG SONARR_REVISION
-ARG SONARR_BRANCH
-COPY <<EOF "/app/package_info"
-PackageVersion=5.0.0.${SONARR_REVISION}
-PackageAuthor=[abihf](https://github.com/abihf/images)
-UpdateMethod=Docker
-Branch=${SONARR_BRANCH}
-EOF
+EXPOSE 8989
 
 VOLUME ["/config"]
 WORKDIR /app/bin
