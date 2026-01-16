@@ -8,6 +8,8 @@ A collection of hardened Docker images for various applications, automatically b
 |-------------|-------------|-----------------|
 | [Plex](https://www.plex.tv/) | Media server platform | [![Plex](https://github.com/abihf/images/actions/workflows/plex.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/plex.yml) |
 | [Sonarr](https://sonarr.tv/) | TV show automation | [![Sonarr](https://github.com/abihf/images/actions/workflows/sonarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sonarr.yml) |
+| [Radarr](https://radarr.video/) | Movie automation | [![Radarr](https://github.com/abihf/images/actions/workflows/radarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/radarr.yml) |
+| [Prowlarr](https://prowlarr.com/) | Indexer manager for *arr apps | [![Prowlarr](https://github.com/abihf/images/actions/workflows/prowlarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/prowlarr.yml) |
 | [SABnzbd](https://sabnzbd.org/) | Usenet binary newsreader | [![SABnzbd](https://github.com/abihf/images/actions/workflows/sabnzbd.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sabnzbd.yml) |
 | [qBittorrent](https://www.qbittorrent.org/) | BitTorrent client | [![qBittorrent](https://github.com/abihf/images/actions/workflows/qbittorrent.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/qbittorrent.yml) |
 | [AdGuardHome](https://adguard.com/adguard-home/) | DNS sinkhole & ad blocker | [![AdGuardHome](https://github.com/abihf/images/actions/workflows/adguardhome.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/adguardhome.yml) |
