@@ -1,4 +1,4 @@
-FROM archlinux:base-devel AS builder
+FROM ghcr.io/archlinux/archlinux:base-devel AS builder
 WORKDIR /build/plex-media-server-plexpass
 
 ARG PLEX_VERSION=1.43.0.10389
@@ -9,7 +9,7 @@ RUN useradd -m nonroot && chown -R nonroot:nonroot /build
 USER nonroot
 RUN makepkg --noconfirm -s && mv plex-media-server-plexpass-*.pkg.tar.zst /build/plex-media-server-plexpass.pkg.tar.zst
 
-FROM archlinux:base
+FROM ghcr.io/archlinux/archlinux:base
 RUN useradd -r -d /config -s /usr/bin/nologin plex
 RUN --mount=type=bind,from=builder,source=/build/plex-media-server-plexpass.pkg.tar.zst,target=/plex.pkg.tar.zst \
     pacman -U --noconfirm /plex.pkg.tar.zst
