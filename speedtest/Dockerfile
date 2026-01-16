@@ -16,5 +16,5 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 FROM scratch
 COPY --link --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --link --from=builder /app/librespeed-rs /usr/bin/librespeed-rs
-COPY --link --from=builder /app/assets /app/assets
+COPY --link assets /app/assets
 ENTRYPOINT [ "/usr/bin/librespeed-rs" ]

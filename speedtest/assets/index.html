@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedtest</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Speedtest</h1>
+            <div id="ip-info" class="status-badge">Detecting ISP...</div>
+        </header>
+
+        <main>
+            <div class="gauge-container">
+                <div class="progress-ring-wrapper">
+                    <svg class="progress-ring" width="280" height="280">
+                        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12" fill="transparent" r="120" cx="140" cy="140"/>
+                        <circle class="progress-ring__circle" stroke="var(--primary-color)" stroke-width="12" fill="transparent" r="120" cx="140" cy="140"/>
+                    </svg>
+                    <div class="gauge-content">
+                        <div class="speed-value" id="current-speed">0.0</div>
+                        <div class="speed-unit">Mbps</div>
+                        <div class="status-text" id="status-text">Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn">Start Test</button>
+            </div>
+
+            <div class="results-grid">
+                <div class="card result-card">
+                    <div class="card-label">Ping</div>
+                    <div class="card-value" id="ping-value">--</div>
+                    <div class="card-unit">ms</div>
+                </div>
+                <div class="card result-card">
+                    <div class="card-label">Jitter</div>
+                    <div class="card-value" id="jitter-value">--</div>
+                    <div class="card-unit">ms</div>
+                </div>
+                <div class="card result-card">
+                    <div class="card-label">Download</div>
+                    <div class="card-value highlight-dl" id="dl-value">--</div>
+                    <div class="card-unit">Mbps</div>
+                </div>
+                <div class="card result-card">
+                    <div class="card-label">Upload</div>
+                    <div class="card-value highlight-ul" id="ul-value">--</div>
+                    <div class="card-unit">Mbps</div>
+                </div>
+            </div>
+
+            <div id="share-area" class="share-area" style="display:none">
+                <div class="card">
+                    <div class="card-label">Share Results</div>
+                    <input id="share-url" readonly aria-label="Share URL" />
+                    <img id="share-image" alt="Results image" />
+                    <div id="share-toast" class="share-toast" role="status" aria-live="polite">Link copied</div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://github.com/librespeed/speedtest-rust" target="_blank">LibreSpeed</a></p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

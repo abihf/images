@@ -1,0 +1,149 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --primary-color: #38bdf8;
+    --secondary-color: #818cf8;
+    --accent-ping: #e2e8f0;
+    --accent-dl: #34d399;
+    --accent-ul: #a78bfa;
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+header { text-align: center; margin-top: 1rem; }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.05em; }
+
+.status-badge {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.875rem;
+    display: inline-block;
+}
+
+/* Gauge */
+.gauge-container { position: relative; display: flex; justify-content: center; margin: 1rem 0; }
+.progress-ring__circle {
+    stroke-dasharray: 754; /* 2 * PI * r */
+    stroke-dashoffset: 754;
+    transition: stroke-dashoffset 0.1s linear;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    stroke-linecap: round;
+}
+.gauge-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.speed-value { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+.speed-unit { color: var(--text-secondary); font-size: 1rem; margin-top: 0.25rem; display: none; }
+.status-text { margin-top: 0.5rem; font-weight: 600; color: var(--primary-color); text-transform: uppercase; font-size: 0.875rem; letter-spacing: 1px; }
+
+/* Controls */
+.controls {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+#start-btn {
+    background: var(--primary-color);
+    color: #0f172a;
+    border: none;
+    padding: 14px 40px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+}
+#start-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+#start-btn:active { transform: translateY(1px); }
+#start-btn:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; }
+
+/* Results */
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+}
+.share-area {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+.share-area .card { position: relative; }
+.share-area input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+    margin-top: 0.5rem;
+}
+.share-area img {
+    width: 100%;
+    margin-top: 0.5rem;
+    border-radius: 8px;
+}
+.share-toast {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--text-primary);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.share-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.card-label { color: var(--text-secondary); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+.card-value { font-size: 1.75rem; font-weight: 700; }
+.card-unit { color: var(--text-secondary); font-size: 0.75rem; }
+
+.highlight-dl { color: var(--accent-dl); }
+.highlight-ul { color: var(--accent-ul); }
+
+footer { color: var(--text-secondary); font-size: 0.75rem; margin-top: auto; padding-bottom: 1rem; }
+footer a { color: var(--text-secondary); text-decoration: none; border-bottom: 1px dotted; }
