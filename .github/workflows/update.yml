@@ -21,6 +21,7 @@ jobs:
         run: bash update-all.sh
         env:
           PLEX_PASS: ${{ secrets.PLEX_PASS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v7
