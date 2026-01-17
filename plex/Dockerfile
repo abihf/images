@@ -11,7 +11,7 @@ ENV PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="/config/Library/Application Suppo
     PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="6" \
     PLEX_MEDIA_SERVER_TMPDIR="/tmp" \
     PLEX_MEDIA_SERVER_USER="plex" \
-    LD_LIBRARY_PATH="/usr/lib/plexmediaserver:/usr/lib:/usr/lib/x86_64-linux-gnu"
+    LD_LIBRARY_PATH="/usr/lib/plexmediaserver/lib:/usr/lib:/usr/lib/x86_64-linux-gnu"
 USER nonroot:nonroot
 VOLUME [ "/config" ]
 CMD [ "/usr/lib/plexmediaserver/Plex Media Server" ]
