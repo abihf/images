@@ -5,7 +5,10 @@ ADD --link ${PLEX_URL} plex.deb
 
 FROM dhi.io/debian-base:trixie
 RUN --mount=type=bind,from=downloader,source=/plex.deb,target=/plex.deb \
-    dpkg -i /plex.deb
+    --mount=type=cache,target=/var/cache/apt \
+    --mount=type=cache,target=/var/lib/apt \
+    apt-get update && \
+    apt-get install -y /plex.deb ocl-icd-libopencl1
 ENV PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="/config/Library/Application Support" \
     PLEX_MEDIA_SERVER_HOME="/usr/lib/plexmediaserver" \
     PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="6" \
