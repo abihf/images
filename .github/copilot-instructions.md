@@ -81,6 +81,35 @@ Each push generates:
 
 ## Development Guidelines
 
+### Commit Message Format
+All commits should follow this format:
+
+```
+<app name>: <short explanation>
+
+<long description>
+```
+
+**Examples:**
+```
+plex: update to version 1.43.0
+
+Updated Plex Media Server to the latest version with AMD GPU 
+transcoding support and VA-API drivers. Added vainfo for debugging.
+
+sonarr: add alpine base image variant
+
+Added support for building Sonarr on Alpine Linux in addition to 
+the existing Debian variant for reduced image size and faster startup.
+```
+
+**Guidelines:**
+- Keep the subject line under 50 characters
+- Start with the app name in lowercase
+- Use imperative mood ("add" not "added")
+- Provide detailed context in the long description
+- Reference GitHub issues if applicable (e.g., "Fixes #123")
+
 ### Adding a New Application
 1. Create new directory: `myapp/`
 2. Write `Dockerfile` following multi-stage pattern with `ARG` for version
