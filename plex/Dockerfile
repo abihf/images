@@ -1,19 +1,37 @@
-FROM scratch AS downloader
+FROM alpine:3.15 AS base
 
+FROM base AS downloader
+RUN apk add --no-cache dpkg
 ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.0.10389-8be686aa6/debian/plexmediaserver_1.43.0.10389-8be686aa6_amd64.deb
 ADD --link ${PLEX_URL} plex.deb
+RUN dpkg -x /plex.deb /downloaded
 
-FROM ubuntu:24.04
-RUN --mount=type=bind,from=downloader,source=/plex.deb,target=/plex.deb \
-    --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
-    apt-get update && \
-    apt-get install -y /plex.deb libva2 libva-drm2 libdrm2 libdrm-amdgpu1 mesa-va-drivers vainfo
+
+FROM base AS vainfo
+RUN apk add --no-cache meson ninja build-base libva-dev
+ADD --link https://github.com/intel/libva-utils.git /libva-utils
+
+RUN --mount=type=cache,target=/libva-utils/build <<EOF sh -euo pipefail
+cd /libva-utils
+meson setup build \
+  -Ddrm=true \
+  -Dx11=false \
+  -Dwayland=false \
+  -Dtests=false
+ninja -C build vainfo/vainfo
+mv build/vainfo/vainfo /vainfo
+EOF
+
+
+FROM base
+RUN apk add --no-cache libstdc++ libva mesa-va-gallium mesa-dri-gallium openssl ca-certificates
+COPY --link --from=downloader /downloaded /
+COPY --link --chmod=0755 --from=vainfo /vainfo /usr/bin/vainfo
 ENV HOME="/config" \
     PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="/config/Library/Application Support" \
     PLEX_MEDIA_SERVER_HOME="/usr/lib/plexmediaserver" \
     PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="6" \
-    LIBVA_DRIVERS_PATH="/usr/lib/x86_64-linux-gnu/dri"
-USER nonroot:nonroot
+    LIBVA_DRIVERS_PATH="/usr/lib/dri"
+# USER nonroot:nonroot
 VOLUME [ "/config" ]
 CMD [ "/usr/lib/plexmediaserver/Plex Media Server" ]
