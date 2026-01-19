@@ -1,4 +1,4 @@
-FROM alpine:3.23 AS base
+FROM alpine:3.15 AS base
 
 FROM base AS downloader
 RUN apk add --no-cache dpkg
@@ -11,7 +11,7 @@ FROM base AS vainfo
 RUN apk add --no-cache meson ninja build-base libva-dev
 ADD --link https://github.com/intel/libva-utils.git /libva-utils
 
-RUN <<EOF sh -euo pipefail
+RUN --mount=type=cache,target=/libva-utils/build <<EOF sh -euo pipefail
 cd /libva-utils
 meson setup build \
   -Ddrm=true \
