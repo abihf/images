@@ -22,10 +22,16 @@ jobs:
         env:
           PLEX_PASS: ${{ secrets.PLEX_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate commit message
+        id: message
+        run: |
+          apps="$(git diff --name-only | cut -d/ -f1 | sort | uniq | paste -s -d' ')"
+          echo "::set-output name=msg::update: ${apps}"
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "Automated image updates"
+          commit_message: "${{ steps.message.outputs.msg }}"
           branch: main
           file_pattern: '**/Dockerfile'
