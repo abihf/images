@@ -2,7 +2,7 @@ FROM alpine:3.15 AS base
 
 FROM base AS downloader
 RUN apk add --no-cache dpkg
-ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.0.10389-8be686aa6/debian/plexmediaserver_1.43.0.10389-8be686aa6_amd64.deb
+ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.0.10467-2b1ba6e69/debian/plexmediaserver_1.43.0.10467-2b1ba6e69_amd64.deb
 ADD --link ${PLEX_URL} plex.deb
 RUN dpkg -x /plex.deb /downloaded
 
