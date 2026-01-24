@@ -9,7 +9,7 @@ RUN dpkg -x /plex.deb /downloaded && \
   rm -f libdrm*.so* libva*.so* libgcompat.so.0 libc.so* ld-musl-x86_64.so.1
 
 FROM base AS dev
-RUN --mount=type=cache,target=/var/cache/apk apk add build-base clang lld llvm-dev pkgconf linux-headers py3-pip cmake openssl-dev ninja
+RUN --mount=type=cache,target=/var/cache/apk apk add build-base clang lld llvm-dev pkgconf linux-headers py3-pip cmake ninja
 ENV CC=clang \
     CXX=clang++ \
     AR=llvm-ar \
@@ -39,6 +39,7 @@ meson setup --reconfigure build \
   -Dtests=false || ( cat build/meson-logs/meson-log.txt ; false )
 meson compile -C build
 DESTDIR=/staging meson install -C build
+strip -s /staging/usr/lib/*.so.*
 EOF
 
 FROM dev AS libva
@@ -56,6 +57,7 @@ meson setup --reconfigure build \
   -Dwith_wayland=no || ( cat build/meson-logs/meson-log.txt ; false )
 meson compile -C build
 DESTDIR=/staging meson install -C build
+strip -s /staging/usr/lib/*.so.*
 EOF
 
 FROM dev AS mesa-va
@@ -87,6 +89,7 @@ meson setup  --reconfigure build \
   -Degl=disabled \
   -Dgbm=disabled \
   -Dllvm=disabled \
+  -Damd-use-llvm=false \
   -Dshared-llvm=disabled \
   -Dvalgrind=disabled \
   -Dlibunwind=disabled \
@@ -95,6 +98,7 @@ meson setup  --reconfigure build \
 
 meson compile -C build
 DESTDIR=/staging meson install -C build
+strip -s /staging/usr/lib/*.so.* /staging/usr/lib/dri/*.so
 EOF
 
 
@@ -116,7 +120,7 @@ EOF
 
 
 FROM base
-RUN apk add --no-cache libstdc++ openssl ca-certificates libelf gcompat
+RUN apk add --no-cache libstdc++ ca-certificates libelf gcompat
 COPY --link --from=downloader /downloaded /
 COPY --link --from=libdrm /staging/usr/share/libdrm /usr/share/libdrm/
 COPY --link --from=libdrm /staging/usr/lib /usr/lib/
