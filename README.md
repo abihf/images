@@ -6,7 +6,7 @@ A collection of hardened Docker images for various applications, automatically b
 
 | Application | Description | Workflow Status |
 |-------------|-------------|-----------------|
-| [Plex](https://www.plex.tv/) | Media server platform | [![Plex](https://github.com/abihf/images/actions/workflows/plex.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/plex.yml) |
+| [Plex](https://www.plex.tv/) | Media server platform (with amdgpu transcoding support) | [![Plex](https://github.com/abihf/images/actions/workflows/plex.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/plex.yml) |
 | [Sonarr](https://sonarr.tv/) | TV show automation | [![Sonarr](https://github.com/abihf/images/actions/workflows/sonarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sonarr.yml) |
 | [Radarr](https://radarr.video/) | Movie automation | [![Radarr](https://github.com/abihf/images/actions/workflows/radarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/radarr.yml) |
 | [Prowlarr](https://prowlarr.com/) | Indexer manager for *arr apps | [![Prowlarr](https://github.com/abihf/images/actions/workflows/prowlarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/prowlarr.yml) |
@@ -84,78 +84,6 @@ Each build produces two tags:
 1. Create a new directory with the application name
 2. Add a `Dockerfile`
 3. Create a workflow file in `.github/workflows/`:
-
-```yaml
-name: Your App
-
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'yourapp/**'
-      - .github/workflows/yourapp.yml
-  workflow_dispatch:
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE: ${{ github.repository }}/yourapp
-
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-  attestations: write
-
-jobs:
-  build:
-    name: Build and push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log in to Docker Hardened Images
-        uses: docker/login-action@v3
-        with:
-          registry: dhi.io
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push image (latest, sha)
-        id: build
-        uses: docker/build-push-action@v6
-        with:
-          context: ./yourapp
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.sha }}
-          platforms: linux/amd64
-          cache-from: type=gha,scope=${{ github.workflow }}
-          cache-to: type=gha,mode=max,scope=${{ github.workflow }}
-          outputs: type=registry,oci-mediatypes=true,compression=estargz,force-compression=true
-
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          subject-digest: ${{ steps.build.outputs.digest }}
-          push-to-registry: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-```
-
 4. Update this README with the new application
 
 ## 🔐 Required Secrets
