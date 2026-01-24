@@ -11,6 +11,8 @@ jobs:
     outputs:
       images: ${{ steps.list.outputs.images }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
       - name: List all container images in the repository
         id: list
         run: |
