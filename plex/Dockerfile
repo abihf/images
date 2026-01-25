@@ -39,7 +39,7 @@ meson setup --reconfigure build \
   -Dtests=false || ( cat build/meson-logs/meson-log.txt ; false )
 meson compile -C build
 DESTDIR=/staging meson install -C build
-strip -s /staging/usr/lib/*.so.*
+strip --strip-unneeded /staging/usr/lib/*.so.*
 EOF
 
 FROM dev AS libva
@@ -57,7 +57,7 @@ meson setup --reconfigure build \
   -Dwith_wayland=no || ( cat build/meson-logs/meson-log.txt ; false )
 meson compile -C build
 DESTDIR=/staging meson install -C build
-strip -s /staging/usr/lib/*.so.*
+strip --strip-unneeded /staging/usr/lib/*.so.*
 EOF
 
 FROM dev AS mesa-va
@@ -98,7 +98,7 @@ meson setup  --reconfigure build \
 
 meson compile -C build
 DESTDIR=/staging meson install -C build
-strip -s /staging/usr/lib/*.so.* /staging/usr/lib/dri/*.so
+strip --strip-unneeded /staging/usr/lib/*.so.* /staging/usr/lib/dri/*.so
 EOF
 
 
