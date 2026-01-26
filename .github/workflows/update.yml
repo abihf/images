@@ -27,7 +27,7 @@ jobs:
         id: message
         run: |
           apps="$(git diff --name-only | cut -d/ -f1 | sort | uniq | paste -s -d' ')"
-          echo "msg::update: ${apps}" >> $GITHUB_OUTPUT
+          echo "msg=update: ${apps}" >> $GITHUB_OUTPUT
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v7
