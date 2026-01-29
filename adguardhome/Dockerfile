@@ -1,6 +1,6 @@
 ARG ADGUARDHOME_COMMIT=dde59df7bb307da06144d2a59e71e3ab6790ed8d
 
-FROM dhi.io/node:24-alpine3.22-dev AS ui
+FROM dhi.io/node:24-alpine3.23-dev AS ui
 ENV SOURCE_DATE_EPOCH=0
 ARG ADGUARDHOME_COMMIT
 ADD --link --keep-git-dir=true https://github.com/AdguardTeam/AdGuardHome.git#${ADGUARDHOME_COMMIT} /app
