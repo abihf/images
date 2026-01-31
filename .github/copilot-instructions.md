@@ -59,7 +59,8 @@ ADD --link https://.../${VERSION}/file.tar.gz archive.tar.gz
 ```
 
 ### Common Patterns
-- **Downloader stage**: Downloads binaries with `ADD --link` (creates cache layer)
+- **Binary/source downloads**: To optimize caching, use `ADD --link` to download binaries or git sources; avoid `RUN curl`
+- **Multi-command scripts**: Use `RUN sh -euo pipefail <<EOF` for scripts with more than 2 commands
 - **Caching mounts**: Uses `--mount=type=cache` for `/var/cache/apt` and `/var/lib/apt`
 - **Multi-platform variations**: Some apps (Sonarr) have Alpine vs Debian variants
 - **Configuration paths**: Apps expect config at `/config` volume
