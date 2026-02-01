@@ -3,7 +3,7 @@ RUN apk add --no-cache make clang21 llvm21-dev lld automake autoconf
 
 WORKDIR /app
 
-ARG PAR2_COMMIT=2fe96ab24d2e943fae8bb98b5342152bf84de962
+ARG PAR2_COMMIT=35cb7d759509ce941289bcea77b3450e8cb8923e
 ADD --link https://github.com/animetosho/par2cmdline-turbo.git#${PAR2_COMMIT} par2cmdline-turbo
 ENV CC=clang-21 \
     CXX=clang++-21 \
