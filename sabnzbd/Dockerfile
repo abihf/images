@@ -14,7 +14,7 @@ ENV CC=clang-21 \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld"
 
 RUN sh -euxo pipefail <<EOF
-  mkdir /tmp
+  mkdir -p /tmp
   cd par2cmdline-turbo
   aclocal
   automake --add-missing
