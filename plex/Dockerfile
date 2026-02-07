@@ -9,7 +9,8 @@ RUN dpkg -x /plex.deb /downloaded && \
   rm -f libdrm*.so* libva*.so* libgcompat.so.0 libc.so* ld-musl-x86_64.so.1
 
 FROM base AS dev
-RUN --mount=type=cache,target=/var/cache/apk apk add build-base clang lld llvm-dev pkgconf linux-headers py3-pip cmake ninja
+RUN --mount=type=cache,target=/var/cache/apk apk add build-base clang lld llvm-dev pkgconf linux-headers py3-pip ninja
+RUN pip3 install meson==1.10.0 
 ENV CC=clang \
     CXX=clang++ \
     AR=llvm-ar \
@@ -18,7 +19,6 @@ ENV CC=clang \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld" \
     SOURCE_DATE_EPOCH=0
 
-RUN pip3 install meson==1.10.0 
 
 FROM dev AS libdrm
 ARG LIBDRM_VERSION=2.4.131
