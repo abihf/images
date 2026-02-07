@@ -9,10 +9,6 @@ on:
       - .github/workflows/restic.yml
   workflow_dispatch:
 
-# env:
-#   REGISTRY: ghcr.io
-#   IMAGE: ${{ github.repository }}/restic
-
 permissions:
   contents: read
   packages: write
@@ -60,11 +56,12 @@ jobs:
         with:
           context: ./restic
           push: true
+          sbom: true
           tags: |
             ghcr.io/${{ github.repository }}/restic:latest
             ghcr.io/${{ github.repository }}/restic:${{ github.sha }}
           platforms: linux/amd64
-          outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=true
+          outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=false
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
