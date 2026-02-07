@@ -64,9 +64,7 @@ jobs:
             ghcr.io/${{ github.repository }}/restic:latest
             ghcr.io/${{ github.repository }}/restic:${{ github.sha }}
           platforms: linux/amd64
-          cache-from: type=gha,scope=${{ github.workflow }}
-          cache-to: type=gha,mode=max,scope=${{ github.workflow }}
-          outputs: type=registry,oci-mediatypes=true,compression=estargz,force-compression=true
+          outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=true
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
