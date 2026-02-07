@@ -60,7 +60,7 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}/adguardhome:latest
             ghcr.io/${{ github.repository }}/adguardhome:${{ github.sha }}
-          platforms: linux/amd64/v3
+          platforms: linux/amd64
           outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=false
 
       - name: Attest build provenance
