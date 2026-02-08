@@ -1,4 +1,4 @@
-ARG SONARR_COMMIT=bee7e4325f8d3c79572f2a088e661d2133f15158
+ARG SONARR_COMMIT=fdda9abcbbce7de7e1c213dd7e524201fa53f319
 ARG SONARR_REVISION=0
 ARG SONARR_BRANCH=v5-develop
 
@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
   mv /app/_output/net10.0/linux-musl-x64/publish bin && \
   chmod 0755 /app/bin/ffprobe
 
-FROM dhi.io/node:24-alpine3.22-dev AS fe
+FROM dhi.io/node:24-alpine3.23-dev AS fe
 ENV SOURCE_DATE_EPOCH=0
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app

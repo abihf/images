@@ -60,6 +60,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}/sonarr:latest
             ghcr.io/${{ github.repository }}/sonarr:${{ github.sha }}
+          args: |
+            SONARR_REVISION=${{ github.run_number }}
           platforms: linux/amd64
           outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=false
 
