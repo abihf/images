@@ -1,4 +1,5 @@
 FROM alpine:3.16 AS base
+RUN apk upgrade --no-cache
 
 FROM base AS downloader
 RUN apk add --no-cache dpkg
