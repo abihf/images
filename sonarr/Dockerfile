@@ -11,13 +11,23 @@ RUN apk add --no-cache git
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
 WORKDIR /app
+
+# Restore dependencies (cached separately)
+RUN --mount=type=cache,target=/root/.nuget/packages \
+  dotnet restore src/Sonarr.sln -r linux-musl-x64
+
 ARG SONARR_REVISION
 ARG SONARR_BRANCH
 RUN sed -i -e "s/<AssemblyVersion>[0-9.*]\+<\/AssemblyVersion>/<AssemblyVersion>5.0.0.${SONARR_REVISION}<\/AssemblyVersion>/;s/<AssemblyConfiguration>[\$()A-Za-z-]\+<\/AssemblyConfiguration>/<AssemblyConfiguration>${SONARR_BRANCH}<\/AssemblyConfiguration>/;" src/Directory.Build.props
+
+# Build and publish
 RUN --mount=type=cache,target=/root/.nuget/packages \
   --mount=type=cache,target=/app/obj \
   --mount=type=cache,target=/app/_output \
-  dotnet msbuild -restore src/Sonarr.sln -p:SelfContained=true -p:Configuration=Release -p:Platform=Posix -p:RuntimeIdentifiers=linux-musl-x64 -t:PublishAllRids -p:IlcInstructionSet=x86-64-v3 && \
+  dotnet msbuild -m -v:minimal src/Sonarr.sln \
+    -p:SelfContained=true -p:Configuration=Release -p:Platform=Posix \
+    -p:RuntimeIdentifiers=linux-musl-x64 -t:PublishAllRids \
+    -p:IlcInstructionSet=x86-64-v3 && \
   mv /app/_output/net10.0/linux-musl-x64/publish bin && \
   chmod 0755 /app/bin/ffprobe
 
