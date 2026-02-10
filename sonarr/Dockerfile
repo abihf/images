@@ -8,7 +8,7 @@ WORKDIR /app
 FROM base AS project
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-RUN find /app -type f ! -name "*.csproj" ! -name "*.sln" ! -name "*.props" ! -name "*.targets" -delete
+RUN find /app -type f ! -name "*.csproj" ! -name "*.sln" ! -name "*.props" ! -name "*.targets" ! -name package.json ! -name yarn.lock -delete
 
 FROM dhi.io/dotnet:10-sdk-alpine3.22 AS be
 ENV SOURCE_DATE_EPOCH=0
@@ -37,16 +37,19 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
     -p:SelfContained=true -p:Configuration=Release -p:Platform=Posix \
     -p:RuntimeIdentifier=${RUNTIME_IDENTIFIER} -p:TargetFramework=${TARGET_FRAMEWORK} -t:Publish \
     -p:IlcInstructionSet=x86-64-v3 && \
-  mv /app/_output/${TARGET_FRAMEWORK}/${RUNTIME_IDENTIFIER}/publish bin &&
+  mv /app/_output/${TARGET_FRAMEWORK}/${RUNTIME_IDENTIFIER}/publish bin && \
   chmod 0755 /app/bin/ffprobe
 
 # image for frontend build
 FROM dhi.io/node:24-alpine3.23-dev AS fe
 ENV SOURCE_DATE_EPOCH=0
+WORKDIR /app
+
+COPY --link --from=project /app/package.json /app/yarn.lock ./
+RUN --mount=type=cache,target=/root/.cache/yarn yarn install
+
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-WORKDIR /app
-RUN yarn install
 RUN yarn build --env production
 
 # ------------------------
