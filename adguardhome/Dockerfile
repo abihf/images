@@ -29,7 +29,7 @@ ldflags="-s -w"
 ldflags="\${ldflags} -X \${version_pkg}.version=\${version}"
 ldflags="\${ldflags} -X \${version_pkg}.channel=${CHANNEL}"
 ldflags="\${ldflags} -X \${version_pkg}.committime=${SOURCE_DATE_EPOCH}"
-CGO_ENABLED=0 GOAMD64=v3 go build -ldflags "\${ldflags}" --trimpath -o AdGuardHome .
+CGO_ENABLED=0 GOAMD64=v3 GOEXPERIMENT=greenteagc go build -ldflags "\${ldflags}" --trimpath -o AdGuardHome .
 EOF
 
 FROM golang AS sbom-generator
