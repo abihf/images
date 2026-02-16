@@ -1,6 +1,6 @@
 FROM dhi.io/node:20-alpine3.23-dev AS builder
 WORKDIR /app
-ARG OVERSEERR_COMMIT=b0a15d3809554610cd835b3e2474d5c6663cb8a9
+ARG OVERSEERR_COMMIT=98ea135f2d370faba0362d259fccf51d8fd44a16
 ADD --link https://github.com/sct/overseerr.git#${OVERSEERR_COMMIT} /app
 RUN --mount=type=cache,target=/root/.cache/yarn \
     yarn install --frozen-lockfile
