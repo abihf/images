@@ -13,7 +13,6 @@ A collection of hardened Docker images for various applications, automatically b
 | [SABnzbd](https://sabnzbd.org/) | Usenet binary newsreader | [![SABnzbd](https://github.com/abihf/images/actions/workflows/sabnzbd.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sabnzbd.yml) |
 | [qBittorrent](https://www.qbittorrent.org/) | BitTorrent client | [![qBittorrent](https://github.com/abihf/images/actions/workflows/qbittorrent.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/qbittorrent.yml) |
 | [AdGuardHome](https://adguard.com/adguard-home/) | DNS sinkhole & ad blocker | [![AdGuardHome](https://github.com/abihf/images/actions/workflows/adguardhome.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/adguardhome.yml) |
-| [Overseerr](https://overseerr.dev/) | Request management and media discovery tool | [![Overseerr](https://github.com/abihf/images/actions/workflows/overseerr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/overseerr.yml) |
 | [Restic](https://restic.net/) | Fast, secure backup program | [![Restic](https://github.com/abihf/images/actions/workflows/restic.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/restic.yml) |
 | [Speedtest](https://github.com/librespeed/speedtest-rust) | Network speed testing (librespeed-rs) | [![Speedtest](https://github.com/abihf/images/actions/workflows/speedtest.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/speedtest.yml) |
 
