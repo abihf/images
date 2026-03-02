@@ -1,5 +1,5 @@
 FROM dhi.io/alpine-base:3.23-dev AS par2
-RUN apk add --no-cache make clang21 llvm21-dev lld automake autoconf
+RUN apk add --no-cache make clang21 llvm21-dev lld21 automake autoconf python-3.12
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ ENV CC=clang-21 \
     RANLIB=llvm21-ranlib \
     CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld"
+    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld-21"
 
 RUN sh -euxo pipefail <<EOF
   mkdir -p /tmp
