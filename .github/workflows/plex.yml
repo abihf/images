@@ -64,7 +64,7 @@ jobs:
           outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=false
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ghcr.io/${{ github.repository }}/plex
           subject-digest: ${{ steps.build.outputs.digest }}
