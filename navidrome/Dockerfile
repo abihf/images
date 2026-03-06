@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM base AS downloader
 ARG NAVIDROME_VERSION=0.60.3
-ADD --link https://github.com/navidrome/navidrome/releases/download/v${NAVIDROME_VERSION}/navidrome_${NAVIDROME_VERSION}_Linux_x86_64.tar.gz navidrome.tar.gz
+ADD --link https://github.com/navidrome/navidrome/releases/download/v${NAVIDROME_VERSION}/navidrome_${NAVIDROME_VERSION}_linux_amd64.tar.gz navidrome.tar.gz
 RUN tar -xzf navidrome.tar.gz && \
   rm navidrome.tar.gz && \
   chmod 0755 /app/navidrome
