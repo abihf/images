@@ -17,8 +17,7 @@ WORKDIR /app
 # Restore dependencies
 COPY --link --from=project /app .
 RUN --mount=type=cache,target=/root/.nuget/packages \
-  dotnet restore src/NzbDrone.Console/Sonarr.Console.csproj -r linux-musl-x64 -p:SolutionDir=/app/src/ && \
-  dotnet restore src/NzbDrone.Mono/Sonarr.Mono.csproj -r linux-musl-x64 -p:SolutionDir=/app/src/
+  dotnet restore src/Sonarr.sln -r linux-musl-x64
 
 # Copy full source
 ARG SONARR_COMMIT
@@ -44,14 +43,11 @@ ARG RUNTIME_IDENTIFIER=linux-musl-x64
 RUN --mount=type=cache,target=/root/.nuget/packages \
   --mount=type=cache,target=/app/obj \
   --mount=type=cache,target=/app/_output \
-  dotnet build -v:minimal src/NzbDrone.Mono/Sonarr.Mono.csproj \
-    -p:Configuration=Release -p:Platform=Posix -p:SolutionDir=/app/src/ -p:OutputPath=/app/_mono/ && \
-  dotnet msbuild -m -v:minimal src/NzbDrone.Console/Sonarr.Console.csproj \
+  dotnet msbuild -m -v:minimal src/Sonarr.sln \
     -p:SelfContained=true -p:Configuration=Release -p:Platform=Posix \
     -p:RuntimeIdentifier=${RUNTIME_IDENTIFIER} -p:TargetFramework=${TARGET_FRAMEWORK} -t:Publish \
-    -p:IlcInstructionSet=x86-64-v3 -p:SolutionDir=/app/src/ && \
+    -p:IlcInstructionSet=x86-64-v3 && \
   mv /app/_output/${TARGET_FRAMEWORK}/${RUNTIME_IDENTIFIER}/publish bin && \
-  find /app/_mono -maxdepth 3 -type f \( -name "*.dll" -o -name "*.so" \) -exec cp -an {} /app/bin/ \; && \
   chmod 0755 /app/bin/ffprobe
 
 # image for frontend build
