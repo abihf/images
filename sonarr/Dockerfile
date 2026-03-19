@@ -2,15 +2,15 @@ ARG SONARR_COMMIT=5bde9242393b988d8b5f154b0b935f6289af9f6d
 ARG SONARR_REVISION=0
 ARG SONARR_BRANCH=v5-develop
 
-FROM dhi.io/alpine-base:3.22-dev AS base
+FROM dhi.io/alpine-base:3.23-dev AS base
 WORKDIR /app
 
 FROM base AS project
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-RUN find /app -type f ! -name "*.csproj" ! -name "*.sln" ! -name "*.props" ! -name "*.targets" ! -name package.json ! -name yarn.lock -delete
+RUN find /app -type f ! -name "*.csproj" ! -name "*.sln" ! -name "*.props" ! -name "*.targets" ! -name NuGet.Config ! -name package.json ! -name yarn.lock -delete
 
-FROM dhi.io/dotnet:10-sdk-alpine3.22 AS be
+FROM dhi.io/dotnet:10-sdk-alpine3.23 AS be
 ENV SOURCE_DATE_EPOCH=0
 WORKDIR /app
 
@@ -23,6 +23,16 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
 
+# override global.json to ensure correct SDK version is used for build
+COPY <<EOF /app/global.json
+{
+  "sdk": {
+    "version": "${DOTNET_VERSION}"
+  }
+}
+EOF
+
+# update version and branch info in Directory.Build.props
 ARG SONARR_REVISION
 ARG SONARR_BRANCH
 RUN sed -i -e "s/<AssemblyVersion>[0-9.*]\+<\/AssemblyVersion>/<AssemblyVersion>5.0.0.${SONARR_REVISION}<\/AssemblyVersion>/;s/<AssemblyConfiguration>[\$()A-Za-z-]\+<\/AssemblyConfiguration>/<AssemblyConfiguration>${SONARR_BRANCH}<\/AssemblyConfiguration>/;" src/Directory.Build.props
