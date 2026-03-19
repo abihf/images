@@ -51,7 +51,7 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
     -p:RuntimeIdentifier=${RUNTIME_IDENTIFIER} -p:TargetFramework=${TARGET_FRAMEWORK} -t:Publish \
     -p:IlcInstructionSet=x86-64-v3 -p:SolutionDir=/app/src/ && \
   mv /app/_output/${TARGET_FRAMEWORK}/${RUNTIME_IDENTIFIER}/publish bin && \
-  find /app/_mono -maxdepth 3 -type f -name "*.dll" -exec cp -an {} /app/bin/ \; && \
+  find /app/_mono -maxdepth 3 -type f \( -name "*.dll" -o -name "*.so" \) -exec cp -an {} /app/bin/ \; && \
   chmod 0755 /app/bin/ffprobe
 
 # image for frontend build
