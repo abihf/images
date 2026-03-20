@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/var/cache/apk \
     curl \
     libcrypto3 \
     libssl3 \
-    python3 \
+    python-3.12 \
     qt6-qtbase \
     qt6-qtbase-sqlite \
     tini \
