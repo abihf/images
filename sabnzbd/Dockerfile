@@ -13,14 +13,15 @@ ENV CC=clang-21 \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld-21"
 
-RUN sh -euxo pipefail <<EOF
+RUN --mount=type=cache,target=/app/par2cmdline-turbo/build sh -euxo pipefail <<EOF
   mkdir -p /tmp
   cd par2cmdline-turbo
   aclocal
   automake --add-missing
   autoconf
-  ./configure --prefix=/usr || (cat config.log && false)
-  make
+  cd build
+  ../configure --prefix=/usr || (cat config.log && false)
+  make -j$(nproc)
   make install DESTDIR=/out/par2
 EOF
 
