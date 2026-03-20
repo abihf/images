@@ -9,10 +9,6 @@ on:
       - .github/workflows/sabnzbd.yml
   workflow_dispatch:
 
-concurrency:
-  group: docker-cloud-builds
-  cancel-in-progress: false
-
 permissions:
   contents: read
   packages: write
@@ -48,11 +44,11 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+      - name: Configure WarpBuild Docker Builders
+        uses: Warpbuilds/docker-configure@v1
         with:
-          driver: cloud
-          endpoint: "abihf/github-abihf-images"
+          profile-name: warp-docker
+          api-key: ${{ secrets.WARPBUILD_API_KEY }}
 
       - name: Build and push image (latest, sha)
         id: build
