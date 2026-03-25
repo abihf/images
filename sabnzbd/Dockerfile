@@ -29,13 +29,13 @@ EOF
 
 FROM dhi.io/python:3.14-alpine3.23-dev
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip libbz2
-ARG SABNZBD_COMMIT=14e00b366ec9e110234d82b6425af96deb7bbf8d
+ARG SABNZBD_COMMIT=cd5acde5d2df26b54ff0c904a3a03ea4a96ab781
 ADD --link https://github.com/sabnzbd/sabnzbd.git#${SABNZBD_COMMIT} /app/sabnzbd
 WORKDIR /app/sabnzbd
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt
 
 COPY --link --from=par2 /out/par2 /
-ARG UNRAR_VERSION=7.2.4
+ARG UNRAR_VERSION=7.2.5
 ADD --link --chmod=755 https://github.com/EDM115/unrar-alpine/releases/download/${UNRAR_VERSION}/unrar /usr/bin/unrar
 
 VOLUME [ "/config" ]
