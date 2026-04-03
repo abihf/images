@@ -59,7 +59,7 @@ RUN \
   ./b2 stage --stagedir=./ --with-headers
 
 # build libtorrent
-ARG LIBBT_COMMIT=8b8242fe9b47360032fb040a53d44df8a031a051
+ARG LIBBT_COMMIT=455e9da7f1073c2448055f268fe9d840fa620340
 ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_COMMIT} libtorrent
 RUN --mount=type=cache,target=/app/libtorrent/build \
   cd libtorrent && \
@@ -77,7 +77,7 @@ RUN --mount=type=cache,target=/app/libtorrent/build \
   cmake --install build
 
 # build qbittorrent
-ARG QBT_COMMIT=2aa33ee8a006d7c3ccd7255e74ed73fdd42aeb13
+ARG QBT_COMMIT=2fd21ea91a515034f03ef15b9203c6984cfa5604
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \
