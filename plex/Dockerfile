@@ -3,7 +3,7 @@ RUN apk upgrade --no-cache
 
 FROM base AS downloader
 RUN apk add --no-cache dpkg
-ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.1.10561-69cc2fd8d/debian/plexmediaserver_1.43.1.10561-69cc2fd8d_amd64.deb
+ARG PLEX_URL=https://downloads.plex.tv/plex-media-server-new/1.43.1.10576-06378bdcd/debian/plexmediaserver_1.43.1.10576-06378bdcd_amd64.deb
 ADD --link ${PLEX_URL} plex.deb
 RUN dpkg -x /plex.deb /downloaded && \
   cd /downloaded/usr/lib/plexmediaserver/lib && \
