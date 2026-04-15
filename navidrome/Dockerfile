@@ -2,7 +2,7 @@ FROM dhi.io/alpine-base:3.23-dev AS base
 WORKDIR /app
 
 FROM base AS downloader
-ARG NAVIDROME_VERSION=0.61.1
+ARG NAVIDROME_VERSION=0.61.2
 ADD --link https://github.com/navidrome/navidrome/releases/download/v${NAVIDROME_VERSION}/navidrome_${NAVIDROME_VERSION}_linux_amd64.tar.gz navidrome.tar.gz
 RUN tar -xzf navidrome.tar.gz && \
   rm navidrome.tar.gz && \
