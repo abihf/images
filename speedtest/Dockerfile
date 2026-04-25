@@ -1,4 +1,4 @@
-FROM dhi.io/rust:1-alpine3.22-dev AS base
+FROM dhi.io/rust:1-alpine3.23-dev AS base
 WORKDIR /app
 
 FROM base AS builder
