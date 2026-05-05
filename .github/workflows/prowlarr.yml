@@ -9,6 +9,10 @@ on:
       - .github/workflows/prowlarr.yml
   workflow_dispatch:
 
+concurrency:
+  group: docker-cloud-builds
+  cancel-in-progress: false
+
 permissions:
   contents: read
   packages: write
@@ -44,11 +48,11 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Configure WarpBuild Docker Builders
-        uses: Warpbuilds/docker-configure@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
         with:
-          profile-name: warp-docker
-          api-key: ${{ secrets.WARPBUILD_API_KEY }}
+          driver: cloud
+          endpoint: "abihf/github-abihf-images"
 
       - name: Build and push image (latest, sha)
         id: build
