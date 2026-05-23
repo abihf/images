@@ -9,10 +9,6 @@ on:
       - .github/workflows/qbittorrent.yml
   workflow_dispatch:
 
-concurrency:
-  group: docker-cloud-builds
-  cancel-in-progress: false
-
 permissions:
   contents: read
   packages: write
