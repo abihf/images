@@ -1,4 +1,4 @@
-ARG PROWLARR_VERSION=2.4.0.5391
+ARG PROWLARR_VERSION=2.4.0.5397
 
 FROM dhi.io/alpine-base:3.23-dev AS base
 
