@@ -3,7 +3,7 @@ RUN apk add --no-cache make clang21 llvm21-dev lld21 automake autoconf python-3.
 
 WORKDIR /app
 
-ARG PAR2_COMMIT=18b934c049f05cfe7ff280abf105f7e4f94a67e0
+ARG PAR2_COMMIT=033424e74bdb27a053a088e8e58fb380d8ed1498
 ADD --link https://github.com/animetosho/par2cmdline-turbo.git#${PAR2_COMMIT} par2cmdline-turbo
 ENV CC=clang-21 \
     CXX=clang++-21 \
@@ -29,7 +29,7 @@ EOF
 
 FROM dhi.io/python:3.14-alpine3.23-dev
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip libbz2
-ARG SABNZBD_COMMIT=45aafe07744f12852e3731bd99e9f72064c47998
+ARG SABNZBD_COMMIT=777db2015828fca63582d21b0e756fae21c1d80e
 ADD --link https://github.com/sabnzbd/sabnzbd.git#${SABNZBD_COMMIT} /app/sabnzbd
 WORKDIR /app/sabnzbd
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt
