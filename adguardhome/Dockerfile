@@ -1,7 +1,7 @@
 ARG ADGUARDHOME_COMMIT=3adfbb9f3dc10aea909c2d963a9250fbefc96ee1
 
 ARG BUILDPLATFORM
-FROM --platform=$BUILDPLATFORM dhi.io/node:24-alpine3.23-dev AS ui
+FROM --platform=$BUILDPLATFORM dhi.io/node:26-alpine3.24-dev AS ui
 ENV SOURCE_DATE_EPOCH=0
 ARG ADGUARDHOME_COMMIT
 ADD --link --keep-git-dir=true https://github.com/AdguardTeam/AdGuardHome.git#${ADGUARDHOME_COMMIT} /app
@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.npm \
   npm install
 RUN npm run build-prod
 
-FROM --platform=$BUILDPLATFORM dhi.io/golang:1-alpine3.23-dev AS golang
+FROM --platform=$BUILDPLATFORM dhi.io/golang:1.26-alpine3.24-dev AS golang
 
 FROM golang AS builder
 ENV SOURCE_DATE_EPOCH=0
