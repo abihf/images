@@ -15,7 +15,9 @@ const CONFIG = {
 // State
 let isRunning = false;
 let currentIspInfo = null; // holds full ISP info from getIP for telemetry
-const circle = document.querySelector('.progress-ring__circle');
+
+/** @type {SVGCircleElement} */
+const circle = document.getElementById('circle');
 const radius = circle.r.baseVal.value;
 const circumference = radius * 2 * Math.PI;
 
@@ -53,8 +55,33 @@ circle.style.strokeDasharray = `${circumference} ${circumference}`;
 circle.style.strokeDashoffset = circumference;
 
 function setProgress(percent) {
-    const offset = circumference - (percent / 100) * circumference;
+    const clampedPercent = Math.max(0, Math.min(percent, 100));
+    const offset = circumference - (clampedPercent / 100) * circumference;
     circle.style.strokeDashoffset = offset;
+}
+
+function createSpeedDisplay(startTime, getLoadedBytes) {
+    let frameId = null;
+
+    const render = () => {
+        frameId = null;
+        const duration = (performance.now() - startTime) / 1000;
+        if (duration <= 0.1) return;
+
+        const speed = (getLoadedBytes() * 8 * CONFIG.overheadCompensationFactor) / duration / 1_000_000;
+        els.speed.textContent = speed.toFixed(1);
+        setProgress(speed);
+    };
+
+    return {
+        update() {
+            if (frameId === null) frameId = requestAnimationFrame(render);
+        },
+        flush() {
+            if (frameId !== null) cancelAnimationFrame(frameId);
+            render();
+        }
+    };
 }
 
 // Utils
@@ -155,14 +182,17 @@ async function runPing() {
 
 async function runDownload() {
     els.status.textContent = "Downloading...";
-    els.ring.querySelector('.progress-ring__circle').style.stroke = 'var(--accent-dl)';
+    circle.style.stroke = 'var(--accent-dl)';
     
     const startT = performance.now();
     let loadedBytes = 0;
     let keepGoing = true;
-
-    // Stop test after configured duration
-    setTimeout(() => { keepGoing = false; }, CONFIG.downloadDuration * 1000);
+    const controllers = new Set();
+    const display = createSpeedDisplay(startT, () => loadedBytes);
+    const stopTimer = setTimeout(() => {
+        keepGoing = false;
+        controllers.forEach((controller) => controller.abort());
+    }, CONFIG.downloadDuration * 1000);
 
     // We use a concurrent stream approach
     const concurrency = 2; // 2 parallel streams is usually enough for modern browsers
@@ -170,14 +200,20 @@ async function runDownload() {
 
     const downloadWorker = async () => {
         while (keepGoing) {
+            const controller = new AbortController();
+            controllers.add(controller);
             try {
                 // Request a large chunk (100MB) to sustain the stream
-                const response = await fetch(`${CONFIG.endpoints.dl}?ckSize=100&r=${Math.random()}`);
+                const response = await fetch(`${CONFIG.endpoints.dl}?ckSize=100&r=${Math.random()}`, {
+                    signal: controller.signal,
+                    cache: 'no-store'
+                });
+                if (!response.ok || !response.body) throw new Error('Download request failed');
                 const reader = response.body.getReader();
 
                 while (true) {
                     if (!keepGoing) {
-                        reader.cancel();
+                        await reader.cancel();
                         break;
                     }
                     
@@ -187,28 +223,23 @@ async function runDownload() {
                     
                     // value.length contains the size of the packet received
                     loadedBytes += value.length;
-
-                    // Update UI immediately
-                    const now = performance.now();
-                    const duration = (now - startT) / 1000;
-                    
-                    // Avoid division by zero at very start
-                    if (duration > 0.1) {
-                        const speed = ((loadedBytes * 8 * CONFIG.overheadCompensationFactor) / duration) / 1000000; // Mbps
-                        els.speed.textContent = speed.toFixed(1);
-                        setProgress(Math.min((speed / 100) * 100, 100)); // Visual scale approx
-                    }
+                    display.update();
                 }
             } catch (e) {
-                console.error("Download stream failed", e);
-                await sleep(100); // Wait a bit before retrying
-                if (!keepGoing) break;
+                if (keepGoing && e.name !== 'AbortError') {
+                    console.error("Download stream failed", e);
+                    await sleep(100); // Wait a bit before retrying
+                }
+            } finally {
+                controllers.delete(controller);
             }
         }
     };
 
     for(let i=0; i<concurrency; i++) workers.push(downloadWorker());
     await Promise.all(workers);
+    clearTimeout(stopTimer);
+    display.flush();
 
     // Final Calculation
     const totalTime = (performance.now() - startT) / 1000;
@@ -218,27 +249,23 @@ async function runDownload() {
 
 async function runUpload() {
     els.status.textContent = "Uploading...";
-    els.ring.querySelector('.progress-ring__circle').style.stroke = 'var(--accent-ul)';
+    circle.style.stroke = 'var(--accent-ul)';
     
     const startT = performance.now();
     let loadedBytes = 0;
     let keepGoing = true;
-
-    setTimeout(() => { keepGoing = false; }, CONFIG.uploadDuration * 1000);
-
-    // Generate a 2MB blob of data to upload
-    const data = new Blob([new Array(2 * 1024 * 1024).fill('a').join('')]);
-    const concurrency = 4;
-    const workers = [];
     const activeXhrs = new Set();
 
-    const updateSpeed = () => {
-        const duration = (performance.now() - startT) / 1000;
-        if (duration <= 0.1) return;
-        const speed = ((loadedBytes * 8 * CONFIG.overheadCompensationFactor) / duration) / 1000000;
-        els.speed.textContent = speed.toFixed(1);
-        setProgress(Math.min((speed / 100) * 100, 100));
-    };
+    const stopTimer = setTimeout(() => {
+        keepGoing = false;
+        activeXhrs.forEach((xhr) => xhr.abort());
+    }, CONFIG.uploadDuration * 1000);
+
+    // Generate a 2MB blob of data to upload
+    const data = new Blob([new Uint8Array(2 * 1024 * 1024).fill(97)]);
+    const concurrency = 4;
+    const workers = [];
+    const display = createSpeedDisplay(startT, () => loadedBytes);
 
     const singleUpload = () => new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
@@ -252,17 +279,17 @@ async function runUpload() {
             const delta = (evt.loaded || 0) - lastLoaded;
             lastLoaded = evt.loaded || lastLoaded;
             loadedBytes += Math.max(delta, 0);
-            updateSpeed();
+            display.update();
             if (!keepGoing && xhr.readyState !== XMLHttpRequest.DONE) {
                 xhr.abort();
             }
         };
 
-        xhr.onload = xhr.onerror = xhr.onabort = () => {
-            // Ensure any remaining bytes get counted if progress didn't emit a final event
-            if (lastLoaded < data.size) {
+        xhr.onloadend = () => {
+            // Count the final bytes only for a successful completed request.
+            if (xhr.status >= 200 && xhr.status < 300 && lastLoaded < data.size) {
                 loadedBytes += (data.size - lastLoaded);
-                updateSpeed();
+                display.update();
             }
             activeXhrs.delete(xhr);
             resolve();
@@ -288,6 +315,8 @@ async function runUpload() {
 
     // Abort any lingering XHRs if timer stopped the loop mid-request
     activeXhrs.forEach((xhr) => xhr.abort());
+    clearTimeout(stopTimer);
+    display.flush();
 
     const totalTime = (performance.now() - startT) / 1000;
     const finalSpeed = totalTime > 0 ? ((loadedBytes * 8 * CONFIG.overheadCompensationFactor) / totalTime) / 1000000 : 0;
@@ -307,31 +336,38 @@ els.startBtn.addEventListener('click', async () => {
     els.jitter.textContent = '--';
     els.speed.textContent = '0.0';
     if (els.speedUnit) els.speedUnit.style.display = 'block';
+    els.shareArea.style.display = 'none';
     setProgress(0);
-    
-    await runPing();
-    await runDownload();
-    await runUpload();
-    
-    // Send telemetry and show share link if testId is returned
-    const testId = await sendTelemetry();
-    if (testId) {
-        // Construct share URL like upstream (base path + /backend/results/?id=TESTID)
-        const base = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-        const shareURL = `${base}/backend/results/?id=${testId}`;
-        els.shareUrl.value = shareURL;
-        els.shareImage.src = shareURL;
-        els.shareArea.style.display = '';
-        els.status.textContent = "Results ready to share";
-    } else {
-        els.status.textContent = "Finished";
+
+    try {
+        await runPing();
+        await runDownload();
+        await runUpload();
+
+        // Send telemetry and show share link if testId is returned
+        const testId = await sendTelemetry();
+        if (testId) {
+            // Construct share URL like upstream (base path + /backend/results/?id=TESTID)
+            const base = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+            const shareURL = `${base}/backend/results/?id=${testId}`;
+            els.shareUrl.value = shareURL;
+            els.shareImage.src = shareURL;
+            els.shareArea.style.display = '';
+            els.status.textContent = "Results ready to share";
+        } else {
+            els.status.textContent = "Finished";
+        }
+        els.speed.textContent = "Done";
+        setProgress(100);
+    } catch (e) {
+        console.error('Speed test failed', e);
+        els.status.textContent = 'Test failed';
+    } finally {
+        if (els.speedUnit) els.speedUnit.style.display = 'none';
+        els.startBtn.disabled = false;
+        els.startBtn.textContent = "Test Again";
+        isRunning = false;
     }
-    els.speed.textContent = "Done";
-    setProgress(100);
-    if (els.speedUnit) els.speedUnit.style.display = 'none';
-    els.startBtn.disabled = false;
-    els.startBtn.textContent = "Test Again";
-    isRunning = false;
 });
 
 // Init
