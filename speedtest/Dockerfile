@@ -8,6 +8,7 @@ ENV RUSTFLAGS="-C target-feature=+crt-static" \
   PKG_CONFIG_ALL_STATIC=1 \
   LIBSQLITE3_SYS_STATIC=1 \
   CARGO_HOME=/usr/local/cargo
+
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/app/target \
