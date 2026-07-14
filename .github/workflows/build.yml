@@ -30,7 +30,7 @@ jobs:
       - name: Get changed images
         id: get_changes
         run: |
-          echo "changed_images=[$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Dockerfile' | awk -F/ '{print $1}' | sort -u | tr '\n' ',' | sed 's/,$//')]" >> $GITHUB_OUTPUT
+          echo "changed_images=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Dockerfile' | cut -d/ -f1 | sort -u | jq -R -s -c 'split("\n") | map(select(. != ""))')" >> $GITHUB_OUTPUT
 
   build:
     name: Build and push
