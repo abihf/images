@@ -1,12 +1,12 @@
-name: Prowlarr
+name: Build Images
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'prowlarr/**'
-      - .github/workflows/prowlarr.yml
+      - '**/Dockerfile'
+      - .github/workflows/build.yml
   workflow_dispatch:
 
 permissions:
@@ -16,9 +16,30 @@ permissions:
   attestations: write
 
 jobs:
+  get_changes:
+    name: Get changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed_images: ${{ steps.get_changes.outputs.changed_images }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get changed images
+        id: get_changes
+        run: |
+          echo "changed_images=[$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Dockerfile' | awk -F/ '{print $1}' | sort -u | tr '\n' ',' | sed 's/,$//')]" >> $GITHUB_OUTPUT
+
   build:
     name: Build and push
     runs-on: ubuntu-latest
+    needs: get_changes
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        image: ${{fromJson(needs.get_changes.outputs.changed_images)}}
+    if: needs.get_changes.outputs.changed_images != '[]'
 
     steps:
       - name: Checkout
@@ -54,19 +75,19 @@ jobs:
         id: build
         uses: docker/build-push-action@v7
         with:
-          context: ./prowlarr
+          context: ./${{ matrix.image }}
           push: true
           sbom: true
           tags: |
-            ghcr.io/${{ github.repository }}/prowlarr:latest
-            ghcr.io/${{ github.repository }}/prowlarr:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ matrix.image }}:latest
+            ghcr.io/${{ github.repository }}/${{ matrix.image }}:${{ github.sha }}
           platforms: linux/amd64
           outputs: type=registry,oci-mediatypes=true,compression=zstd,force-compression=false
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
-          subject-name: ghcr.io/${{ github.repository }}/prowlarr
+          subject-name: ghcr.io/${{ github.repository }}/${{ matrix.image }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
