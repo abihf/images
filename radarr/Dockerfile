@@ -1,10 +1,10 @@
 
-FROM dhi.io/alpine-base:3.23-dev AS base
+FROM dhi.io/alpine-base:3.24-dev AS base
 WORKDIR /app
 
 FROM base AS downloader
-ARG RADARR_VERSION=6.2.1.10461
-ADD --link https://github.com/Radarr/Radarr/releases/download/v${RADARR_VERSION}/Radarr.develop.${RADARR_VERSION}.linux-musl-core-x64.tar.gz radarr.tar.gz
+ARG RADARR_VERSION=6.3.0.10514
+ADD --link https://github.com/Radarr/Radarr/releases/download/v${RADARR_VERSION}/Radarr.master.${RADARR_VERSION}.linux-musl-core-x64.tar.gz radarr.tar.gz
 RUN tar -xzf radarr.tar.gz && \
   mv Radarr bin && \
   rm -rf "bin/Radarr.Update" && rm radarr.tar.gz
@@ -12,7 +12,7 @@ COPY <<EOF "package_info"
 PackageVersion=${RADARR_VERSION}
 PackageAuthor=[abihf](https://github.com/abihf/images)
 UpdateMethod=Docker
-Branch=develop
+Branch=master
 EOF
 
 # image for running

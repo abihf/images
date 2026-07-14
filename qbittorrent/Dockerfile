@@ -1,14 +1,15 @@
-FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.23-dev AS base
+FROM --platform=$BUILDPLATFORM dhi.io/alpine-base:3.24-dev AS base
 
 # runtime dependencies
 RUN --mount=type=cache,target=/var/cache/apk \
+  echo "https://dl-cdn.alpinelinux.org/alpine/v3.24/community" >> /etc/apk/repositories && \
   apk add \
     7zip \
     bash \
     curl \
     libcrypto3 \
     libssl3 \
-    python-3.12 \
+    python3 \
     qt6-qtbase \
     qt6-qtbase-sqlite \
     tini \
@@ -24,13 +25,13 @@ FROM base AS builder
 # https://git.alpinelinux.org/aports/tree/community/qbittorrent/APKBUILD
 RUN --mount=type=cache,target=/var/cache/apk \
   apk add \
+    build-base \
     cmake \
     extra-cmake-modules \
     git \
     clang \
     llvm-dev \
     lld \
-    make \
     ninja \
     openssl-dev \
     qt6-qtbase-dev \
@@ -41,13 +42,13 @@ RUN --mount=type=cache,target=/var/cache/apk \
 ENV CC=clang \
     CXX=clang++ \
     AR=llvm-ar \
-    CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld" \
+    CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
+    CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
+    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro" \
     SOURCE_DATE_EPOCH=0
  
 # prepare boost
-ARG BOOST_TAG=boost-1.91.0-1
+ARG BOOST_TAG=boost-1.92.0.beta1
 ADD --link https://github.com/boostorg/boost/releases/download/${BOOST_TAG}/${BOOST_TAG}-b2-nodocs.tar.xz boost.tar.xz
 RUN \
   tar -xf boost.tar.xz && \
@@ -59,7 +60,7 @@ RUN \
   ./b2 stage --stagedir=./ --with-headers
 
 # build libtorrent
-ARG LIBBT_COMMIT=b07dd5b038cca5ec3d0e85b8e9b7c50f43b584ee
+ARG LIBBT_COMMIT=8606abafc8d0761d8022e092db9af8b3fdfff567
 ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_COMMIT} libtorrent
 RUN --mount=type=cache,target=/app/libtorrent/build \
   cd libtorrent && \
@@ -77,7 +78,7 @@ RUN --mount=type=cache,target=/app/libtorrent/build \
   cmake --install build
 
 # build qbittorrent
-ARG QBT_COMMIT=f239bebc4b1a17f24f0f546f192a24a9d6f80938
+ARG QBT_COMMIT=336366d025045fead6fad6e18f66e1faa6e71f58
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \

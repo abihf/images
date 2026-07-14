@@ -1,17 +1,17 @@
-FROM dhi.io/alpine-base:3.23-dev AS par2
-RUN apk add --no-cache make clang21 llvm21-dev lld21 automake autoconf python-3.12
+FROM dhi.io/alpine-base:3.24-dev AS par2
+RUN apk add --no-cache make clang22 llvm22-dev lld22 automake autoconf python3
 
 WORKDIR /app
 
 ARG PAR2_COMMIT=033424e74bdb27a053a088e8e58fb380d8ed1498
 ADD --link https://github.com/animetosho/par2cmdline-turbo.git#${PAR2_COMMIT} par2cmdline-turbo
-ENV CC=clang-21 \
-    CXX=clang++-21 \
-    AR=llvm21-ar \
-    RANLIB=llvm21-ranlib \
-    CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin" \
-    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro,-fuse-ld=lld-21"
+ENV CC=clang-22 \
+    CXX=clang++-22 \
+    AR=llvm22-ar \
+    RANLIB=llvm22-ranlib \
+    CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
+    CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
+    LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro"
 
 RUN --mount=type=cache,target=/app/par2cmdline-turbo/build sh -euxo pipefail <<EOF
   mkdir -p /tmp
@@ -27,9 +27,9 @@ EOF
 
 
 
-FROM dhi.io/python:3.14-alpine3.23-dev
+FROM dhi.io/python:3.14-alpine3.24-dev
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip libbz2
-ARG SABNZBD_COMMIT=5c247e008c4da825e29bf42f84619ad55ad0f35d
+ARG SABNZBD_COMMIT=ef2ee17c135c313e12c74455a0472edbae711e79
 ADD --link https://github.com/sabnzbd/sabnzbd.git#${SABNZBD_COMMIT} /app/sabnzbd
 WORKDIR /app/sabnzbd
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt

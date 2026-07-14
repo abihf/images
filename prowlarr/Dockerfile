@@ -1,6 +1,6 @@
-ARG PROWLARR_VERSION=2.5.1.5460
+ARG PROWLARR_VERSION=2.5.1.5464
 
-FROM dhi.io/alpine-base:3.23-dev AS base
+FROM dhi.io/alpine-base:3.24-dev AS base
 
 FROM base AS downloader
 WORKDIR /app

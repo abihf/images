@@ -1,8 +1,8 @@
-ARG SONARR_COMMIT=f9e18a7c4475345f325237670d7e71ceac97038b
+ARG SONARR_COMMIT=9a94807a1cf932ae3e3e6e55cf8f5ad924d2fdd8
 ARG SONARR_REVISION=0
 ARG SONARR_BRANCH=v5-develop
 
-FROM dhi.io/alpine-base:3.23-dev AS base
+FROM dhi.io/alpine-base:3.24-dev AS base
 WORKDIR /app
 
 FROM base AS project
@@ -10,7 +10,7 @@ ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
 RUN find /app -type f ! -name "*.csproj" ! -name "*.sln" ! -name "*.props" ! -name "*.targets" ! -name NuGet.Config ! -name package.json ! -name yarn.lock -delete
 
-FROM dhi.io/dotnet:10-sdk-alpine3.23 AS be
+FROM dhi.io/dotnet:10-sdk-alpine3.24 AS be
 ENV SOURCE_DATE_EPOCH=0
 WORKDIR /app
 
@@ -51,7 +51,7 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
   chmod 0755 /app/bin/ffprobe
 
 # image for frontend build
-FROM dhi.io/node:24-alpine3.23-dev AS fe
+FROM dhi.io/node:24-alpine3.24-dev AS fe
 ENV SOURCE_DATE_EPOCH=0
 WORKDIR /app
 

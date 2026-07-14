@@ -1,4 +1,4 @@
-FROM dhi.io/alpine-base:3.23-dev AS base
+FROM dhi.io/alpine-base:3.24-dev AS base
 WORKDIR /app
 
 FROM base AS downloader
