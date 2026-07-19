@@ -2,7 +2,7 @@ FROM dhi.io/rust:1-alpine3.24-dev AS base
 WORKDIR /app
 
 FROM base AS builder
-ARG SPEEDTEST_COMMIT=6e13ea8a5c7a284710a944f7be237eaf2fe7fbf7
+ARG SPEEDTEST_COMMIT=4cf6c2582070342f0f30d9a2cf8c759cf3d13f24
 ADD --link https://github.com/librespeed/speedtest-rust.git#${SPEEDTEST_COMMIT} /app
 ENV RUSTFLAGS="-C target-feature=+crt-static" \
   PKG_CONFIG_ALL_STATIC=1 \
