@@ -3,7 +3,7 @@ FROM dhi.io/alpine-base:3.24-dev AS base
 WORKDIR /app
 
 FROM base AS downloader
-ARG RADARR_VERSION=6.3.0.10514
+ARG RADARR_VERSION=6.4.0.10523
 ADD --link https://github.com/Radarr/Radarr/releases/download/v${RADARR_VERSION}/Radarr.master.${RADARR_VERSION}.linux-musl-core-x64.tar.gz radarr.tar.gz
 RUN tar -xzf radarr.tar.gz && \
   mv Radarr bin && \
