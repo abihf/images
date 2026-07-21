@@ -37,6 +37,9 @@ ARG SONARR_REVISION
 ARG SONARR_BRANCH
 RUN sed -i -e "s/<AssemblyVersion>[0-9.*]\+<\/AssemblyVersion>/<AssemblyVersion>5.0.0.${SONARR_REVISION}<\/AssemblyVersion>/;s/<AssemblyConfiguration>[\$()A-Za-z-]\+<\/AssemblyConfiguration>/<AssemblyConfiguration>${SONARR_BRANCH}<\/AssemblyConfiguration>/;" src/Directory.Build.props
 
+# Remove test projects from solution to speed up build
+RUN dotnet sln src/Sonarr.sln remove $(find src -name "*.csproj" | grep -i test) src/NzbDrone.Update/Sonarr.Update.csproj
+
 # Build and publish
 ARG TARGET_FRAMEWORK=net10.0
 ARG RUNTIME_IDENTIFIER=linux-musl-x64
