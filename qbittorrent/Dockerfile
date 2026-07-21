@@ -78,7 +78,7 @@ RUN --mount=type=cache,target=/app/libtorrent/build \
   cmake --install build
 
 # build qbittorrent
-ARG QBT_COMMIT=bc42af9fd8fb9f39df04ed6747e82f912aff4cc0
+ARG QBT_COMMIT=e70f13d46a42b204559d0e7b16a19eeca522fe9e
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \
