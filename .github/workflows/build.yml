@@ -6,8 +6,12 @@ on:
       - main
     paths:
       - '**/Dockerfile'
-      - .github/workflows/build.yml
   workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image to build (optional)'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -30,7 +34,9 @@ jobs:
       - name: Get changed images
         id: get_changes
         run: |
-          echo "changed_images=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Dockerfile' | cut -d/ -f1 | sort -u | jq -R -s -c 'split("\n") | map(select(. != ""))')" >> $GITHUB_OUTPUT
+          changed="$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Dockerfile' | cut -d/ -f1 | sort -u)"
+          changed="${changed} ${{ github.event.inputs.image }}"
+          echo "changed_images=$(jq -R -s -c '[splits("\\s+")] | map(select(. != ""))' <<< "$changed")" >> $GITHUB_OUTPUT
 
   build:
     name: Build and push
