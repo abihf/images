@@ -28,10 +28,17 @@ function get_latest_github_commit() {
 
 function get_latest_github_release_tag() {
   local repo="$1"
+  local only_release="${2:-false}"
 
   curl -sL $(github_api_headers) \
-    "${GITHUB_API}/repos/${repo}/releases?per_page=1" | \
-    jq -r '.[0].tag_name'
+    "${GITHUB_API}/repos/${repo}/releases?per_page=10" | \
+    jq -r --arg only_release "$only_release" '
+      if $only_release == "true" then
+        map(select(.prerelease | not))[0].tag_name
+      else
+        .[0].tag_name
+      end
+    '
 }
 
 function get_number_of_commits() {
