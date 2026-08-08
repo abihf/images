@@ -1,14 +1,14 @@
 FROM dhi.io/alpine-base:3.24-dev AS par2
-RUN apk add --no-cache make clang22 llvm22-dev lld22 automake autoconf python3
+RUN apk add --no-cache make clang llvm lld automake autoconf python3
 
 WORKDIR /app
 
 ARG PAR2_COMMIT=033424e74bdb27a053a088e8e58fb380d8ed1498
 ADD --link https://github.com/animetosho/par2cmdline-turbo.git#${PAR2_COMMIT} par2cmdline-turbo
-ENV CC=clang-22 \
-    CXX=clang++-22 \
-    AR=llvm22-ar \
-    RANLIB=llvm22-ranlib \
+ENV CC=clang \
+    CXX=clang++ \
+    AR=llvm-ar \
+    RANLIB=llvm-ranlib \
     CFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
     CXXFLAGS="-march=x86-64-v3 -pipe -fstack-clash-protection -fstack-protector-strong -fno-plt -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -D_GLIBCXX_ASSERTIONS -flto=thin -fuse-ld=lld" \
     LDFLAGS="-gz -Wl,-O1,--as-needed,--sort-common,-z,now,-z,pack-relative-relocs,-z,relro"
