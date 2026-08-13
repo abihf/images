@@ -48,7 +48,7 @@ ENV CC=clang \
     SOURCE_DATE_EPOCH=0
  
 # prepare boost
-ARG BOOST_TAG=boost-1.92.0.beta1
+ARG BOOST_TAG=boost-1.92.0
 ADD --link https://github.com/boostorg/boost/releases/download/${BOOST_TAG}/${BOOST_TAG}-b2-nodocs.tar.xz boost.tar.xz
 RUN \
   tar -xf boost.tar.xz && \
@@ -78,7 +78,7 @@ RUN --mount=type=cache,target=/app/libtorrent/build \
   cmake --install build
 
 # build qbittorrent
-ARG QBT_COMMIT=93f2a22a6794f18e85e1efc3681f240a1be630b8
+ARG QBT_COMMIT=cd86b0d2485c17774feb3676f13fa6d024ac7205
 ADD --link https://github.com/qbittorrent/qBittorrent.git#${QBT_COMMIT} qBittorrent
 RUN --mount=type=cache,target=/app/qBittorrent/build \
   cd qBittorrent && \
