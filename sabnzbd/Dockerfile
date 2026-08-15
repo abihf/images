@@ -3,7 +3,7 @@ RUN apk add --no-cache make clang llvm lld automake autoconf python3
 
 WORKDIR /app
 
-ARG PAR2_COMMIT=f1e70b71ac87a870bd97b07a482ed2c703ca39b4
+ARG PAR2_COMMIT=a30ff8ccbe78444cc24fb7dfdb78215e5a313458
 ADD --link https://github.com/animetosho/par2cmdline-turbo.git#${PAR2_COMMIT} par2cmdline-turbo
 ENV CC=clang \
     CXX=clang++ \
