@@ -60,7 +60,7 @@ RUN \
   ./b2 stage --stagedir=./ --with-headers
 
 # build libtorrent
-ARG LIBBT_COMMIT=af430f89734fc9c4ff47da7dc26881cecbef5c59
+ARG LIBBT_COMMIT=498e16f9c2aede0003ab4c5a56769c8872c71110
 ADD --link https://github.com/arvidn/libtorrent.git#${LIBBT_COMMIT} libtorrent
 RUN --mount=type=cache,target=/app/libtorrent/build \
   cd libtorrent && \
