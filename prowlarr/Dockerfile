@@ -5,7 +5,7 @@ FROM dhi.io/alpine-base:3.24-dev AS base
 FROM base AS downloader
 WORKDIR /app
 ARG PROWLARR_VERSION
-ADD --link https://github.com/Prowlarr/Prowlarr/releases/download/v${PROWLARR_VERSION}/Prowlarr.develop.${PROWLARR_VERSION}.linux-musl-core-x64.tar.gz prowlarr.tar.gz
+ADD --link https://github.com/Prowlarr/Prowlarr/releases/download/v${PROWLARR_VERSION}/Prowlarr.master.${PROWLARR_VERSION}.linux-musl-core-x64.tar.gz prowlarr.tar.gz
 RUN tar -xzf prowlarr.tar.gz && \
   mv Prowlarr bin && \
   rm -rf "bin/Prowlarr.Update" && rm prowlarr.tar.gz
