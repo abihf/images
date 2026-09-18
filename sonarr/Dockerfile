@@ -1,4 +1,4 @@
-ARG SONARR_COMMIT=59468add52f1d91b65c1a93b8a72cdaf63620cc0
+ARG SONARR_COMMIT=76c684e097f16ac216e6213845e5cac372774995
 ARG SONARR_REVISION=0
 ARG SONARR_BRANCH=v5-develop
 
@@ -16,7 +16,17 @@ WORKDIR /app
 
 # Restore dependencies
 COPY --link --from=project /app .
+
+# override global.json to ensure correct SDK version is used for build
+COPY --link <<EOF /app/global.json
+{
+  "sdk": {
+    "version": "${DOTNET_VERSION}"
+  }
+}
+EOF
 RUN dotnet sln src/Sonarr.sln remove $(find src -name "*.csproj" | grep -i test) src/NzbDrone.Update/Sonarr.Update.csproj
+
 RUN --mount=type=cache,target=/root/.nuget/packages \
   dotnet restore src/Sonarr.sln -r linux-musl-x64
 
@@ -24,16 +34,15 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
 
-RUN dotnet sln src/Sonarr.sln remove $(find src -name "*.csproj" | grep -i test) src/NzbDrone.Update/Sonarr.Update.csproj
-
 # override global.json to ensure correct SDK version is used for build
-COPY <<EOF /app/global.json
+COPY --link <<EOF /app/global.json
 {
   "sdk": {
     "version": "${DOTNET_VERSION}"
   }
 }
 EOF
+RUN dotnet sln src/Sonarr.sln remove $(find src -name "*.csproj" | grep -i test) src/NzbDrone.Update/Sonarr.Update.csproj
 
 # update version and branch info in Directory.Build.props
 ARG SONARR_REVISION
