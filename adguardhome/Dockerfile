@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.npm \
   npm install
 RUN npm run build-prod
 
-FROM --platform=$BUILDPLATFORM dhi.io/golang:1.26-alpine3.24-dev AS golang
+FROM --platform=$BUILDPLATFORM dhi.io/golang:1.27-alpine3.24-dev AS golang
 
 FROM golang AS builder
 ENV SOURCE_DATE_EPOCH=0
