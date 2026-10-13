@@ -1,6 +1,6 @@
-ARG SONARR_COMMIT=8bc7ca89796165e8c305c1d9b8774e181f9e91bd
+ARG SONARR_COMMIT=57816c149d02f95543973fefb4780c4495f8121c
 ARG SONARR_REVISION=0
-ARG SONARR_BRANCH=v5-develop
+ARG SONARR_BRANCH=develop
 
 FROM dhi.io/alpine-base:3.24-dev AS base
 WORKDIR /app
@@ -72,7 +72,7 @@ RUN --mount=type=cache,target=/root/.cache/yarn yarn install
 
 ARG SONARR_COMMIT
 ADD --link https://github.com/Sonarr/Sonarr.git#${SONARR_COMMIT} /app
-RUN yarn build --env production
+RUN yarn build
 
 # ------------------------
 # image for running
