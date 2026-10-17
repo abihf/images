@@ -29,7 +29,7 @@ EOF
 
 FROM dhi.io/python:3.14-alpine3.24-dev
 RUN apk add --no-cache ca-certificates libstdc++ libgcc libssl3 tini unzip 7zip libbz2
-ARG SABNZBD_COMMIT=59f9a711c758b6073df053eebb0761e9d8750f8e
+ARG SABNZBD_COMMIT=8a0dfa50e602a3bb99135f9177af729d4b375d70
 ADD --link https://github.com/sabnzbd/sabnzbd.git#${SABNZBD_COMMIT} /app/sabnzbd
 WORKDIR /app/sabnzbd
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt
