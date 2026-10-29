@@ -35,7 +35,7 @@ WORKDIR /app/sabnzbd
 RUN --mount=type=cache,target=/root/.cache/pip pip3 install -r requirements.txt
 
 COPY --link --from=par2 /out/par2 /
-ARG UNRAR_VERSION=7.3.1
+ARG UNRAR_VERSION=7.3.2
 ADD --link --chmod=755 https://github.com/EDM115/unrar-alpine/releases/download/${UNRAR_VERSION}/unrar /usr/bin/unrar
 
 VOLUME [ "/config" ]
