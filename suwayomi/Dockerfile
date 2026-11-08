@@ -16,7 +16,7 @@ RUN apt-get update && \
 
 COPY --link --from=jlink /opt/java/runtime /opt/java/openjdk
 
-ARG SUWAYOMI_VERSION=2.4.2476
+ARG SUWAYOMI_VERSION=2.4.2490
 ADD --link --chown=1000:1000 https://github.com/Suwayomi/Suwayomi-Server-preview/releases/download/v${SUWAYOMI_VERSION}/Suwayomi-Server-v${SUWAYOMI_VERSION}.jar /home/suwayomi/startup/tachidesk_latest.jar
 
 ENV JAVA_HOME=/opt/java/openjdk \
