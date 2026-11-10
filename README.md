@@ -4,18 +4,19 @@ A collection of hardened Docker images for various applications, automatically b
 
 ## 📦 Available Images
 
-| Application | Description | Workflow Status |
-|-------------|-------------|-----------------|
-| [Plex](https://www.plex.tv/) | Media server platform (with amdgpu transcoding support) | [![Plex](https://github.com/abihf/images/actions/workflows/plex.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/plex.yml) |
-| [Sonarr](https://sonarr.tv/) | TV show automation | [![Sonarr](https://github.com/abihf/images/actions/workflows/sonarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sonarr.yml) |
-| [Radarr](https://radarr.video/) | Movie automation | [![Radarr](https://github.com/abihf/images/actions/workflows/radarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/radarr.yml) |
-| [Prowlarr](https://prowlarr.com/) | Indexer manager for *arr apps | [![Prowlarr](https://github.com/abihf/images/actions/workflows/prowlarr.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/prowlarr.yml) |
-| [SABnzbd](https://sabnzbd.org/) | Usenet binary newsreader | [![SABnzbd](https://github.com/abihf/images/actions/workflows/sabnzbd.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/sabnzbd.yml) |
-| [qBittorrent](https://www.qbittorrent.org/) | BitTorrent client | [![qBittorrent](https://github.com/abihf/images/actions/workflows/qbittorrent.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/qbittorrent.yml) |
-| [AdGuardHome](https://adguard.com/adguard-home/) | DNS sinkhole & ad blocker | [![AdGuardHome](https://github.com/abihf/images/actions/workflows/adguardhome.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/adguardhome.yml) |
-| [Navidrome](https://www.navidrome.org/) | Music server | [![Navidrome](https://github.com/abihf/images/actions/workflows/navidrome.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/navidrome.yml) |
-| [Restic](https://restic.net/) | Fast, secure backup program | [![Restic](https://github.com/abihf/images/actions/workflows/restic.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/restic.yml) |
-| [Speedtest](https://github.com/librespeed/speedtest-rust) | Network speed testing (librespeed-rs) | [![Speedtest](https://github.com/abihf/images/actions/workflows/speedtest.yml/badge.svg)](https://github.com/abihf/images/actions/workflows/speedtest.yml) |
+| Application | Description |
+|-------------|-------------|
+| [Plex](https://www.plex.tv/) | Media server platform (with amdgpu transcoding support) |
+| [Sonarr](https://sonarr.tv/) | TV show automation |
+| [Radarr](https://radarr.video/) | Movie automation |
+| [Lidarr](https://lidarr.audio/) | Music automation |
+| [Prowlarr](https://prowlarr.com/) | Indexer manager for *arr apps |
+| [SABnzbd](https://sabnzbd.org/) | Usenet binary newsreader |
+| [qBittorrent](https://www.qbittorrent.org/) | BitTorrent client |
+| [AdGuardHome](https://adguard.com/adguard-home/) | DNS sinkhole & ad blocker |
+| [Navidrome](https://www.navidrome.org/) | Music server |
+| [Restic](https://restic.net/) | Fast, secure backup program |
+| [Speedtest](https://github.com/librespeed/speedtest-rust) | Network speed testing (librespeed-rs) |
 
 ## 🚀 Usage
 
