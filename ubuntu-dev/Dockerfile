@@ -1,6 +1,7 @@
 FROM ubuntu:26.10
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG APT_MIRROR=http://azure.archive.ubuntu.com/ubuntu
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
@@ -19,7 +20,10 @@ ENV LANG=en_US.UTF-8 \
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
-    echo 'APT::Architecture-Variants "amd64v3";' > /etc/apt/apt.conf.d/99enable-amd64v3
+    echo 'APT::Architecture-Variants "amd64v3";' > /etc/apt/apt.conf.d/99enable-amd64v3 && \
+    if [ -n "$APT_MIRROR" ]; then \
+        sed -i -E "s#https?://(archive|security)\.ubuntu\.com/ubuntu/?#${APT_MIRROR%/}/#g" /etc/apt/sources.list.d/ubuntu.sources; \
+    fi
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
