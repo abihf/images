@@ -7,7 +7,8 @@ RUN jlink \
 FROM dhi.io/debian-base:trixie-debian13-dev
 ENV SOURCE_DATE_EPOCH=0
 RUN apt-get update && \
-  apt-get install -y --no-install-recommends unzip fontconfig fonts-dejavu-core && \
+  apt-get install -y --no-install-recommends unzip fontconfig fonts-dejavu-core locales && \
+  localedef -i en_US -f UTF-8 en_US.UTF-8 && \
   rm -rf /var/lib/apt/lists/* && \
   echo "suwayomi:x:1000:" >> /etc/group && \
   echo "suwayomi:x:1000:1000::/home/suwayomi:/usr/sbin/nologin" >> /etc/passwd && \
@@ -19,7 +20,10 @@ COPY --link --from=jlink /opt/java/runtime /opt/java/openjdk
 ARG SUWAYOMI_VERSION=2.4.2490
 ADD --link --chown=1000:1000 https://github.com/Suwayomi/Suwayomi-Server-preview/releases/download/v${SUWAYOMI_VERSION}/Suwayomi-Server-v${SUWAYOMI_VERSION}.jar /home/suwayomi/startup/tachidesk_latest.jar
 
-ENV JAVA_HOME=/opt/java/openjdk \
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    JAVA_HOME=/opt/java/openjdk \
     PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     DBUS_SESSION_BUS_ADDRESS="disabled:"
 USER 1000:1000
