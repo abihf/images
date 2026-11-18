@@ -1,4 +1,6 @@
-FROM ubuntu:26.10
+ARG UBUNTU_TAG=26.10
+ARG UBUNTU_DIGEST=sha256:c4ca31b6e93261c5dd773826f789738a49e414ca04fc094b1ccd0f91e07329a2
+FROM ubuntu:${UBUNTU_TAG}@${UBUNTU_DIGEST}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_MIRROR=http://azure.archive.ubuntu.com/ubuntu
