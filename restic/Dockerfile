@@ -1,6 +1,6 @@
 FROM dhi.io/golang:1.26-alpine3.24-dev AS builder
 ENV SOURCE_DATE_EPOCH=0
-ARG RESTIC_VERSION=0.19.1
+ARG RESTIC_VERSION=0.20.0
 ADD --link https://github.com/restic/restic.git#v${RESTIC_VERSION} /app
 WORKDIR /app
 RUN --mount=type=cache,target=/go/pkg/mod \
