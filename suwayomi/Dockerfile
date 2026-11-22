@@ -1,4 +1,4 @@
-FROM dhi.io/eclipse-temurin:27-alpine
+FROM dhi.io/eclipse-temurin:27-debian13
 
 ARG SUWAYOMI_VERSION=2.4.2512
 ADD --link --chmod=0755 https://github.com/Suwayomi/Suwayomi-Server-preview/releases/download/v${SUWAYOMI_VERSION}/Suwayomi-Server-v${SUWAYOMI_VERSION}.jar /home/suwayomi/startup/tachidesk_latest.jar
