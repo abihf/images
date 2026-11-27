@@ -15,6 +15,7 @@ A collection of hardened Docker images for various applications, automatically b
 | [qBittorrent](https://www.qbittorrent.org/) | BitTorrent client |
 | [AdGuardHome](https://adguard.com/adguard-home/) | DNS sinkhole & ad blocker |
 | [Navidrome](https://www.navidrome.org/) | Music server |
+| [Tautulli](https://www.tautulli.com/) | Plex Media Server monitoring, analytics and notifications |
 | [Restic](https://restic.net/) | Fast, secure backup program |
 | [Speedtest](https://github.com/librespeed/speedtest-rust) | Network speed testing (librespeed-rs) |
 
